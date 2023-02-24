@@ -1,31 +1,46 @@
 package com.techelevator.tenmo.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.lang.Nullable;
-
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
-@NoArgsConstructor // generates a no-args constructor
-@AllArgsConstructor // generates a constructor with arguments for all fields
-@Getter
-@Setter
-@Entity
-@Table(name = "account")
+
 public class Account {
-    @NotNull(message = "account id should not be null")
-    @Id
-    @Column(name = "account_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private long accountId;
-    @Column(name="user_ID")
+
     @NotNull(message = "user ID should not be null")
     private long userId;
-    @Column(name="balance")
+
     private BigDecimal balance;
 
+    public Account(long accountId, long userId, BigDecimal balance) {
+        this.accountId = accountId;
+        this.userId = userId;
+        this.balance = balance;
+    }
+    public Account(long userId, BigDecimal balance){}
+
+    public Account(){}
+
+    public long getAccountId() {
+        return accountId;
+    }
+    public long getUserId() {
+        return userId;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setAccountId(long accountId) {
+        this.accountId = accountId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
 }
