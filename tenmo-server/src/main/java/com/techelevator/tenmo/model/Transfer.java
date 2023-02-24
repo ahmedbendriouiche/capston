@@ -1,15 +1,24 @@
 package com.techelevator.tenmo.model;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public class Transfer {
 
+    @NotNull
     private long transferId;
+    @NotNull
     private long transferTypeId;
+    @NotNull
     private long transferStatusId;
+    @NotNull
     private long accountFrom;
+    @NotNull
     private long accountTo;
+    @NotNull
     private BigDecimal amount;
+
+    public Transfer() {}
 
     public Transfer(long transferId, long transferTypeId, long transferStatusId, long accountFrom, long accountTo, BigDecimal amount) {
         this.transferId = transferId;
