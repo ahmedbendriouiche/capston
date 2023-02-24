@@ -4,7 +4,7 @@ public class TransferStatus {
     private int transferStatusId;
     private String transferStatusDesc;
 
-    public int getTransferStatusId() {pub
+    public int getTransferStatusId() {
         return transferStatusId;
     }
 
