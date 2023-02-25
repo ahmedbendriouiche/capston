@@ -3,6 +3,7 @@ package com.techelevator.tenmo.controller;
 import com.techelevator.tenmo.dao.AccountDao;
 import com.techelevator.tenmo.model.Account;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -20,13 +21,13 @@ public class AccountController {
 
     @ResponseStatus(HttpStatus.FOUND)
     @GetMapping()
-    public List<Account> getAccounts(Principal principal){
-        List<Account> accounts =  accountDao.accountsByUserName(principal.getName());
-        if(accounts==null || accounts.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "No account found for "+principal.getName());
+    public ResponseEntity<List<Account>> getAccounts(Principal principal){
+        List<Account> accounts = accountDao.accountsByUserName(principal.getName());
+        if (accounts == null || accounts.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(accounts);
         }
-        return accounts;
     }
     @ResponseStatus(HttpStatus.FOUND)
     @GetMapping("/balance")
