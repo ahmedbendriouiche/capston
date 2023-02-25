@@ -15,11 +15,11 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/account")
+@RequestMapping("/accounts")
 public class AccountController {
     private AccountDao accountDao;
 
-    @ResponseStatus(HttpStatus.FOUND)
+
     @GetMapping()
     public ResponseEntity<List<Account>> getAccounts(Principal principal){
         List<Account> accounts = accountDao.accountsByUserName(principal.getName());
@@ -29,14 +29,13 @@ public class AccountController {
             return ResponseEntity.ok(accounts);
         }
     }
-    @ResponseStatus(HttpStatus.FOUND)
+
     @GetMapping("/balance")
-    public BigDecimal getBalance(Principal principal){
+    public ResponseEntity<BigDecimal> getBalance(Principal principal){
         BigDecimal balance = accountDao.Balance(principal.getName());
         if(balance==null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "No balance found for "+principal.getName());
+            return ResponseEntity.notFound().build();
         }
-        return balance;
+        return ResponseEntity.ok(balance);
     }
 }
