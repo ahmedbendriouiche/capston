@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping(path = "/transfer/status")
+@RequestMapping(path = "/transfer/type")
 public class TransferTypeController {
     private TransferTypeDao transferTypeDao;
 
