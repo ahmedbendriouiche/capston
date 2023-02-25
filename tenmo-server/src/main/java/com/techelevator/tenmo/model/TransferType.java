@@ -1,26 +1,27 @@
 package com.techelevator.tenmo.model;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class TransferType {
-    @NotBlank
-    private int transferId;
+    @NotNull
+    private int transferTypeId;
+    @NotNull
     private String transferTypeDesc;
 
     public TransferType() {
     }
 
-    public TransferType(int transferId, String transferTypeDesc) {
-        this.transferId = transferId;
+    public TransferType(int transferTypeId, String transferTypeDesc) {
+        this.transferTypeId = transferTypeId;
         this.transferTypeDesc = transferTypeDesc;
     }
 
-    public int getTransferId() {
-        return transferId;
+    public int getTransferTypeId() {
+        return transferTypeId;
     }
 
-    public void setTransferId(int transferId) {
-        this.transferId = transferId;
+    public void setTransferTypeId(int transferId) {
+        this.transferTypeId = transferId;
     }
 
     public String getTransferTypeDesc() {
