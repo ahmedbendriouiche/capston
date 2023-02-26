@@ -17,4 +17,6 @@ public interface TransferDao {
     Transfer createTransfer(long typeId, long statusId, long accountFrom, long accountTo, BigDecimal amount);
 
     void createTransfer(Transfer transfer);
+
+    void deleteTransfer(long transferId);
 }

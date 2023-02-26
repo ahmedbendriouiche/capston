@@ -39,4 +39,9 @@ public class TransferController {
                 transfer.getAmount());
         return ResponseEntity.ok(createdTransfer);
     }
+    @DeleteMapping("/transfers/{transferId}")
+    public void deleteTransfer(@PathVariable long transferId) {
+        transferDao.deleteTransfer(transferId);
+    }
+
 }

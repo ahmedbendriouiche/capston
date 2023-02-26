@@ -16,6 +16,10 @@ public class JdbcTransferDao implements TransferDao {
     public JdbcTransferDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+    /**
+     * Get all transfers
+     * @return a list of Transfer objects
+     */
     @Override
     public List<Transfer> getAllTransfers() {
         List<Transfer> transfers = new ArrayList<>();
@@ -29,6 +33,11 @@ public class JdbcTransferDao implements TransferDao {
         return transfers;
     }
 
+    /**
+     * Get all transfers for a user
+     * @param userId the ID of the user
+     * @return a list of Transfer objects
+     */
     @Override
     public List<Transfer> getTransfersByUserId(long userId) {
         List<Transfer> transfers = new ArrayList<>();
@@ -44,6 +53,11 @@ public class JdbcTransferDao implements TransferDao {
         }
         return transfers;
     }
+    /**
+     * Get a transfer by ID
+     * @param transferId the ID of the transfer
+     * @return a Transfer object, or null if not found
+     */
     @Override
     public Transfer getTransferById(long transferId) {
         Transfer transfer = null;
@@ -56,6 +70,11 @@ public class JdbcTransferDao implements TransferDao {
         }
         return transfer;
     }
+    /**
+     * Get all transfers for a user, whether as the sender or receiver
+     * @param userId the ID of the user
+     * @return a list of Transfer objects
+     */
     @Override
     public List<Transfer> getAllTransfersByUser(long userId) {
         List<Transfer> transfers = new ArrayList<>();
@@ -72,6 +91,15 @@ public class JdbcTransferDao implements TransferDao {
         }
         return transfers;
     }
+    /**
+     Creates a new transfer with the given details and inserts it into the transfers table.
+     @param typeId the transfer type ID
+     @param statusId the transfer status ID
+     @param accountFrom the ID of the account sending the transfer
+     @param accountTo the ID of the account receiving the transfer
+     @param amount the amount being transferred
+     @return the newly created Transfer object with the generated transfer ID
+     */
     @Override
     public Transfer createTransfer(long typeId, long statusId, long accountFrom, long accountTo, BigDecimal amount) {
         String sql = "INSERT INTO transfers (transfer_type_id, transfer_status_id, " +
@@ -79,6 +107,11 @@ public class JdbcTransferDao implements TransferDao {
                 "VALUES (?, ?, ?, ?, ?) RETURNING transfer_id";
         return getTransferById(jdbcTemplate.queryForObject(sql, Integer.class, typeId, statusId, accountFrom, accountTo, amount));
     }
+    /**
+     Creates a new transfer with the given details and inserts it into the transfers table.
+     Sets the transfer ID of the input Transfer object to the generated ID after insertion.
+     @param transfer the Transfer object to insert
+     */
     @Override
     public void createTransfer(Transfer transfer) {
         String sql = "INSERT INTO transfers (transfer_type_id, transfer_status_id, " +
@@ -89,7 +122,21 @@ public class JdbcTransferDao implements TransferDao {
                 transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
         transfer.setTransferId(transferId);
     }
+    /**
+     Deletes the transfer with the given ID from the transfers table.
+     @param transferId the ID of the transfer to delete
+     */
+    @Override
+    public void deleteTransfer(long transferId) {
+        String sql = "DELETE FROM transfers WHERE transfer_id = ?";
+        jdbcTemplate.update(sql, transferId);
+    }
+    /**
 
+     Maps a row from the result set to a Transfer object.
+     @param rs the result set containing the transfer row data
+     @return the Transfer object created from the row data
+     */
     private Transfer mapRowToTransfer(SqlRowSet rs) {
         Transfer transfer = new Transfer();
         transfer.setTransferId(rs.getInt("transfer_id"));
