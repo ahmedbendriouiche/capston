@@ -1,13 +1,12 @@
-package com.techelevator.tenmo.dao;
+package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.TransferStatus;
 import com.techelevator.tenmo.model.TransferType;
 
 import java.util.List;
 
-public interface TransferTypeDao {
-
+public interface TransferTypeService {
     List<TransferType> listAll();
-    TransferType getTypeById(int id);
     TransferType getTypeByName(String name);
+    TransferType getTypeById(int id);
 }
