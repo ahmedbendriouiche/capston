@@ -6,6 +6,7 @@ import java.util.List;
 
 
 public interface TransferStatusService {
+
     List<TransferStatus> listAll();
     TransferStatus getStatusByName(String name);
     TransferStatus getStatusById(int id);

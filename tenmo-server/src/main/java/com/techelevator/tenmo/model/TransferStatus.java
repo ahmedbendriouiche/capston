@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.model;
 
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 public class TransferStatus {
 
@@ -30,5 +31,14 @@ public class TransferStatus {
 
     public void setTransferStatusDesc(String transferStatusDesc) {
         this.transferStatusDesc = transferStatusDesc;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == null) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        TransferStatus status = (TransferStatus) obj;
+        return transferStatusId == status.transferStatusId &&
+                Objects.equals(transferStatusDesc, status.transferStatusDesc);
     }
 }

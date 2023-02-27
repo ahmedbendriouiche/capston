@@ -45,6 +45,8 @@ public class JdbcTransferStatusDao implements TransferStatusDao{
     // Retrieves a TransferStatus from the database by its name
     @Override
     public TransferStatus getStatusByName(String name) {
+        if (name == null) throw new IllegalArgumentException("Name cannot be null");
+
         TransferStatus status = null;
         String sql = "SELECT * FROM transfer_status WHERE transfer_status_desc ILIKE ?;";
 
