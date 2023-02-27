@@ -1,7 +1,5 @@
 package com.techelevator.tenmo.controller;
 
-import com.techelevator.tenmo.dao.JdbcTransferStatusDao;
-import com.techelevator.tenmo.dao.TransferStatusDao;
 import com.techelevator.tenmo.model.TransferStatus;
 import com.techelevator.tenmo.services.TransferStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
