@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -20,6 +21,15 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+
+ * Test class for JdbcTransferDao.
+ * Uses JdbcTest annotation to create a test environment with an in-memory database.
+ * Tests the methods of JdbcTransferDao.
+ * The JdbcTransferDaoTest class is used to test the JdbcTransferDao class which implements the TransferDao interface.
+ * This class includes test methods for the getAllTransfers, getTransfersByUserId,
+ * getTransferById, createTransfer, and deleteTransfer methods of the TransferDao interface.
+ */
 @RunWith(SpringRunner.class)
 @JdbcTest
 public class JdbcTransferDaoTest {
@@ -36,6 +46,10 @@ public class JdbcTransferDaoTest {
     private JdbcTransferDao dao;
     private JdbcTemplate jdbcTemplate;
 
+    /*
+     * The setup method initializes the testTransfer object and sets up the jdbcTemplate and dao for each test method to use.
+     * The test methods use assertions to verify that the methods of the dao return the expected results.
+     */
     @BeforeEach
     public void setup() {
         DataSource dataSource = new SingleConnectionDataSource("jdbc:postgresql://localhost:5432/tenmo_test",
@@ -50,13 +64,20 @@ public class JdbcTransferDaoTest {
         testTransfer.setAccountTo(TEST_ACCOUNT_TO);
         testTransfer.setAmount(TEST_AMOUNT);
     }
+    /**
+     Test case to verify that the getAllTransfers() method of JdbcTransferDao returns all transfers present in the database.
+     It checks if the returned list of transfers is not null and has a size of 1, which is the size of the dataset in the test database.
+     */
     @Test
     public void getAllTransfers_returns_all_transfers() {
         List<Transfer> transfers = transferDao.getAllTransfers();
         assertNotNull(transfers);
         assertEquals(1, transfers.size());
     }
-
+    /**
+     Test case to verify that returns transfers
+     only for the given user id.
+     */
     @Test
     public void getTransfersByUserId_returns_transfers_for_given_user_id() {
         List<Transfer> transfers = transferDao.getTransfersByUserId(1);
@@ -102,7 +123,9 @@ public class JdbcTransferDaoTest {
 
     @Test
     public void createTransfer_throws_duplicate_key_exception_on_same_transfer() {
+        // Attempt to create the same transfer twice
         transferDao.createTransfer(testTransfer);
+        assertThrows(DuplicateKeyException.class, () -> transferDao.createTransfer(testTransfer));
     }
 
     @Test
