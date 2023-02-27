@@ -25,6 +25,7 @@ public class AuthenticationService {
     public AuthenticatedUser login(UserCredentials credentials) {
         HttpEntity<UserCredentials> entity = createCredentialsEntity(credentials);
         AuthenticatedUser user = null;
+        System.out.println(entity);
         try {
             ResponseEntity<AuthenticatedUser> response =
                     restTemplate.exchange(baseUrl + "login", HttpMethod.POST, entity, AuthenticatedUser.class);

@@ -2,12 +2,13 @@ package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.AccountDao;
 import com.techelevator.tenmo.model.Account;
+import org.jboss.logging.BasicLogger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
@@ -16,11 +17,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/accounts")
+//@PreAuthorize("isAuthenticated()")
 public class AccountController {
+    @Autowired
     private AccountDao accountDao;
-
-
+   // Get all user accounts
     @GetMapping()
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<List<Account>> getAccounts(Principal principal){
         List<Account> accounts = accountDao.accountsByUserName(principal.getName());
         if (accounts == null || accounts.isEmpty()) {
@@ -30,9 +33,29 @@ public class AccountController {
         }
     }
 
+    // Get user general balance : sum up all user accounts balances (over all balance)
+    @PreAuthorize("hasAnyRole('USER')")
     @GetMapping("/balance")
     public ResponseEntity<BigDecimal> getBalance(Principal principal){
-        BigDecimal balance = accountDao.Balance(principal.getName());
+        if(principal == null){
+           //return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "can't retrieve user credential");
+        }
+        BigDecimal balance = accountDao.getGeneralBalance(principal.getName());
+        if(balance==null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(balance);
+    }
+
+    // get user's balance for specific account
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @GetMapping("/balance/{accountId}")
+    public ResponseEntity<BigDecimal> getBalanceByAccount(Principal principal, @PathVariable long accountId){
+        if(principal == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        BigDecimal balance = accountDao.getBalanceByAccount(principal.getName(),accountId);
         if(balance==null){
             return ResponseEntity.notFound().build();
         }
