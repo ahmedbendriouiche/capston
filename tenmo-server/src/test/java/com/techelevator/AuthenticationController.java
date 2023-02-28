@@ -1,4 +1,4 @@
-package com.techelevator.tenmo.controller;
+package com.techelevator;
 
 import javax.validation.Valid;
 

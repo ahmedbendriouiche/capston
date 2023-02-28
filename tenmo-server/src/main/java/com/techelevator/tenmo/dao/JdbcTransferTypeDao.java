@@ -6,12 +6,28 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class JdbcTransferTypeDao implements TransferTypeDao {
     JdbcTemplate jdbcTemplate;
 
     public JdbcTransferTypeDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @Override
+    public List<TransferType> listAll() {
+        List<TransferType> type = new ArrayList<>();
+
+        String sql = "SELECT * FROM transfer_type;";
+
+        SqlRowSet result = jdbcTemplate.queryForRowSet(sql);
+        while (result.next()) {
+            type.add(mapRowToType(result));
+        }
+        return type;
     }
 
     @Override
