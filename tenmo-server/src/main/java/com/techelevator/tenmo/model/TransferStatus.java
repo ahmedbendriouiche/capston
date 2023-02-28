@@ -1,13 +1,13 @@
 package com.techelevator.tenmo.model;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class TransferStatus {
 
-    @NotNull
     private int transferStatusId;
-    @NotNull
+    @NotBlank(message = "Description should not be blank")
     private String transferStatusDesc;
 
     public TransferStatus() {}
