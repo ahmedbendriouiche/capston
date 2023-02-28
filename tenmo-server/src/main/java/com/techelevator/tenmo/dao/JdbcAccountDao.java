@@ -28,7 +28,7 @@ public class JdbcAccountDao implements AccountDao{
     }
     @Override
     public List<Account> accountsByUserName(String userName) {
-        String sql ="select balance FROM account  join tenmo_user as u USING(user_id) where u.username = ?";
+        String sql ="select * FROM account  join tenmo_user as u USING(user_id) where u.username = ?";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Account.class), userName);
     }
     private BigDecimal sumBalance(List<Account> accounts){
