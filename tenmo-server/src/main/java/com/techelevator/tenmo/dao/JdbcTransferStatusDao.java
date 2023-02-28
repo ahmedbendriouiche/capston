@@ -31,7 +31,7 @@ public class JdbcTransferStatusDao implements TransferStatusDao{
 
     // Retrieves a TransferStatus from the database by its id
     @Override
-    public TransferStatus getStatusById(int id) {
+    public TransferStatus getStatusById(long id) {
         TransferStatus status = null;
         String sql = "SELECT * FROM transfer_status WHERE transfer_status_id = ?;";
 

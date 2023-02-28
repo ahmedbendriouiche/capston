@@ -28,7 +28,7 @@ public class TransferStatusController {
         getStatusByName() method if parameters contain a name, and getStatusById() if no name is present.
      */
     @RequestMapping(path = "", method = RequestMethod.GET)
-    public ResponseEntity<?> getStatus(@RequestParam(defaultValue = "0") int id,
+    public ResponseEntity<?> getStatus(@RequestParam(defaultValue = "0") long id,
                                     @RequestParam(required = false) String name) {
         if (id == 0 && name == null) {
             // To be replaced with an error message ["Error: Please enter an ID or Name."]

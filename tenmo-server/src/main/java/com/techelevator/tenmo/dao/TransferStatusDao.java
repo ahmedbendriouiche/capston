@@ -7,6 +7,6 @@ import java.util.List;
 public interface TransferStatusDao {
 
     List<TransferStatus> listAll();
-    TransferStatus getStatusById(int id);
+    TransferStatus getStatusById(long id);
     TransferStatus getStatusByName(String name);
 }

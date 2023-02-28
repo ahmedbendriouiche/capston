@@ -9,6 +9,6 @@ public interface TransferStatusService {
 
     List<TransferStatus> listAll();
     TransferStatus getStatusByName(String name);
-    TransferStatus getStatusById(int id);
+    TransferStatus getStatusById(long id);
 
 }

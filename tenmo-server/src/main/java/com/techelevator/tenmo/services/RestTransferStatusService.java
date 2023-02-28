@@ -24,7 +24,7 @@ public class RestTransferStatusService implements TransferStatusService {
     }
 
     @Override
-    public TransferStatus getStatusById(int id) {
+    public TransferStatus getStatusById(long id) {
         return transferStatusDao.getStatusById(id);
     }
 }
