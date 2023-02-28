@@ -22,7 +22,7 @@ public class AccountController {
     @Autowired
     private AccountDao accountDao;
    // Get all user accounts
-    @GetMapping()
+   @GetMapping()
    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<List<Account>> getAccounts(Principal principal){
         if(principal == null){
@@ -51,7 +51,6 @@ public class AccountController {
         }
         return ResponseEntity.ok(balance);
     }
-
 
     // get user's balance for specific account
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
