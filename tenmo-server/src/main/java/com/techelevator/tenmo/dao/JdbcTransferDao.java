@@ -123,6 +123,16 @@ public class JdbcTransferDao implements TransferDao {
         transfer.setTransferId(transferId);
     }
     /**
+     Updates the specified transfer in the database.
+     @param transfer the transfer to be updated
+     */
+    @Override
+    public void updateTransfer(Transfer transfer) {
+        String sql = "UPDATE transfer SET transfer_status_id = ?, updated_at = now() WHERE transfer_id = ?";
+        jdbcTemplate.update(sql, transfer.getTransferStatusId(), transfer.getTransferId());
+    }
+
+    /**
      Deletes the transfer with the given ID from the transfers table.
      @param transferId the ID of the transfer to delete
      */
@@ -131,8 +141,8 @@ public class JdbcTransferDao implements TransferDao {
         String sql = "DELETE FROM transfers WHERE transfer_id = ?";
         jdbcTemplate.update(sql, transferId);
     }
-    /**
 
+    /**
      Maps a row from the result set to a Transfer object.
      @param rs the result set containing the transfer row data
      @return the Transfer object created from the row data

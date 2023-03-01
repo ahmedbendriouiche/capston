@@ -74,11 +74,11 @@ class TransferControllerTest {
 
      Test case for the "getTransferById" method in the TransferController class
      when the transfer with the given ID exists in the database.
-     <p>It creates a transfer with a specific ID, sets up the mock TransferDao to return
+     It creates a transfer with a specific ID, sets up the mock TransferDao to return
      that transfer when getTransferById is called with the same ID,
      calls the getTransferById method of the TransferController with that ID,
      and then asserts that the returned HTTP status code is OK and the returned Transfer object
-     matches the expected transfer object.</p>
+     matches the expected transfer object.
      */
     @Test
     public void getTransferById_returnsTransfer_whenTransferExists() {

@@ -1,22 +1,30 @@
 package com.techelevator.tenmo.model;
 
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public class Transfer {
 
-    @NotNull
+    @NotNull(message = "Transfer ID must not be null")
     private long transferId;
-    @NotNull
+
+    @NotNull(message = "Transfer type ID must not be null")
     private long transferTypeId;
-    @NotNull
+
+    @NotNull(message = "Transfer status ID must not be null")
     private long transferStatusId;
-    @NotNull
+
+    @NotNull(message = "Account from must not be null")
     private long accountFrom;
-    @NotNull
+
+    @NotNull(message = "Account to must not be null")
     private long accountTo;
-    @NotNull
+
+    @NotNull(message = "Amount must not be null")
+    @DecimalMin(value = "0.01", message = "Amount must be greater than 0")
     private BigDecimal amount;
+
 
     public Transfer() {}
 
