@@ -2,6 +2,7 @@ package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.TransferTypeDao;
 import com.techelevator.tenmo.model.TransferType;
+import com.techelevator.tenmo.services.RestTransferTypeService;
 import com.techelevator.tenmo.services.TransferTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class TransferTypeController {
 
     @Autowired
-    private TransferTypeService transferTypeService;
+    private TransferTypeService transferTypeService ;
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<TransferType> getTypeById(@RequestParam(defaultValue = "0") int id) {

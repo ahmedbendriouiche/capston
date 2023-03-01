@@ -17,14 +17,18 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/accounts")
-//@PreAuthorize("isAuthenticated()")
+@PreAuthorize("isAuthenticated()")
 public class AccountController {
     @Autowired
     private AccountDao accountDao;
    // Get all user accounts
-    @GetMapping()
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+   @GetMapping()
+   @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<List<Account>> getAccounts(Principal principal){
+        if(principal == null){
+            //return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "can't retrieve user credential");
+        }
         List<Account> accounts = accountDao.accountsByUserName(principal.getName());
         if (accounts == null || accounts.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -34,12 +38,12 @@ public class AccountController {
     }
 
     // Get user general balance : sum up all user accounts balances (over all balance)
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("/balance")
     public ResponseEntity<BigDecimal> getBalance(Principal principal){
         if(principal == null){
            //return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "can't retrieve user credential");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "can't retrieve user credential");
         }
         BigDecimal balance = accountDao.getGeneralBalance(principal.getName());
         if(balance==null){
@@ -49,11 +53,11 @@ public class AccountController {
     }
 
     // get user's balance for specific account
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("/balance/{accountId}")
     public ResponseEntity<BigDecimal> getBalanceByAccount(Principal principal, @PathVariable long accountId){
         if(principal == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         BigDecimal balance = accountDao.getBalanceByAccount(principal.getName(),accountId);
         if(balance==null){

@@ -4,9 +4,10 @@ import com.techelevator.tenmo.dao.TransferTypeDao;
 import com.techelevator.tenmo.model.TransferStatus;
 import com.techelevator.tenmo.model.TransferType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class RestTransferTypeService implements TransferTypeService{
     @Autowired
     TransferTypeDao transferTypeDao;
