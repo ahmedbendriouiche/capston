@@ -23,7 +23,7 @@ public class TransferStatusService {
         TransferStatus[] statuses = null;
         try {
             ResponseEntity<TransferStatus[]> response =
-                    restTemplate.exchange(API_BASE_URL, HttpMethod.GET, makeAuthEntity(), TransferStatus[].class);
+                    restTemplate.exchange(API_BASE_URL, HttpMethod.GET, makeHeader(), TransferStatus[].class);
             statuses = response.getBody();
         } catch (RestClientResponseException e) {
             BasicLogger.log(e.getMessage());
@@ -35,7 +35,7 @@ public class TransferStatusService {
         TransferStatus status = null;
         try {
             ResponseEntity<TransferStatus> response =
-                    restTemplate.exchange((API_BASE_URL + "?id=" + id), HttpMethod.GET, makeAuthEntity(),
+                    restTemplate.exchange((API_BASE_URL + "?id=" + id), HttpMethod.GET, makeHeader(),
                             TransferStatus.class);
             status = response.getBody();
         } catch (RestClientResponseException e) {
@@ -48,7 +48,7 @@ public class TransferStatusService {
         TransferStatus status = null;
         try {
             ResponseEntity<TransferStatus> response =
-                    restTemplate.exchange((API_BASE_URL + "?name=" + name), HttpMethod.GET, makeAuthEntity(),
+                    restTemplate.exchange((API_BASE_URL + "?name=" + name), HttpMethod.GET, makeHeader(),
                             TransferStatus.class);
             status = response.getBody();
         } catch (RestClientResponseException e) {
@@ -57,9 +57,8 @@ public class TransferStatusService {
         return status;
     }
 
-    private HttpEntity<Void> makeAuthEntity() {
+    private HttpEntity<Void> makeHeader() {
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(authToken);
         return new HttpEntity<>(headers);
     }
 }
