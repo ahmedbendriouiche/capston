@@ -1,45 +1,48 @@
 package com.techelevator.tenmo.controller;
 
-import com.techelevator.tenmo.model.TransferStatus;
 import com.techelevator.tenmo.services.TransferStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.security.Principal;
 
-/**
-    To be merged with TransferController
- */
 
 @RestController
-@RequestMapping(path = "/transfer/status")
+@RequestMapping(path = "/transfers/status")
 public class TransferStatusController {
 
     @Autowired
     private TransferStatusService transferStatusService; /* Connects controller to service layer */
 
-    /*
-        Currently returns a list of all statuses in the transfer_status table. This is for testing purposes
-        only, and will be removed at a later date so that the method only returns a single TransferStatus. Calls the
-        getStatusByName() method if parameters contain a name, and getStatusById() if no name is present.
-     */
-    @RequestMapping(path = "", method = RequestMethod.GET)
-    public ResponseEntity<?> getStatus(@RequestParam(defaultValue = "0") long id,
-                                    @RequestParam(required = false) String name) {
-        if (id == 0 && name == null) {
-            // To be replaced with an error message ["Error: Please enter an ID or Name."]
-            List<TransferStatus> statuses = transferStatusService.listAll();
-            return ResponseEntity.ok(statuses);
-        } else if (name != null) {
-            TransferStatus status = transferStatusService.getStatusByName(name);
-            return ResponseEntity.ok(status);
+    // A request available only to a user named "admin". Returns all statuses in the database.
+    @GetMapping(path = "/listAll")
+    public ResponseEntity getStatuses(Principal principal) {
+        if (principal.getName().equals("admin")) {
+            return ResponseEntity.ok(transferStatusService.listAll());
         } else {
-            TransferStatus status = transferStatusService.getStatusById(id);
-            return ResponseEntity.ok(status);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied.");
         }
+    }
+
+
+    // Returns a status found by either its name or id. Returns a bad request if given either both or no parameters.
+    @GetMapping(path = "")
+    public ResponseEntity getStatus(@RequestParam(defaultValue = "0") long id,
+                                    @RequestParam(required = false) String name) {
+        if (name != null && id > 0) {
+            return ResponseEntity.badRequest().body("Multiple inputs found. Please search for either a status id or " +
+                    "description.");
+        }
+        if ((name == null && id == 0) || (name != null && id > 0)) {
+            return ResponseEntity.badRequest().body("No input found. Please search for either a status id or " +
+                    "description.");
+        }
+        if (name != null) {
+            return ResponseEntity.ok(transferStatusService.getStatusByName(name));
+        }
+        return ResponseEntity.ok(transferStatusService.getStatusById(id));
     }
 }
