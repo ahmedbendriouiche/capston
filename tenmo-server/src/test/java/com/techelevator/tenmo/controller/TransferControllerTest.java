@@ -1,45 +1,47 @@
 package com.techelevator.tenmo.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.services.RestTransferService;
+import com.techelevator.tenmo.services.TransferService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 class TransferControllerTest {
     private MockMvc mockMvc;
     @Mock
-    private TransferDao mockTransferDao;
+    private RestTransferService mockTransferService;
+    @Autowired
     private TransferController transferController;
-
+    @Autowired
+    private TestRestTemplate restTemplate;
+    @Autowired
+    private TransferService transferService;
     /**
      * Sets up the TransferController object for testing by creating a mock TransferDao object.
      */
     @BeforeEach
     public void setup() {
-        mockTransferDao = mock(TransferDao.class);
-        transferController = new TransferController(mockTransferDao);
+        mockTransferService = mock(RestTransferService.class);
+        transferController = new TransferController(mockTransferService);
     }
     /**
      * Test to verify the behavior of the "getAllTransfers" endpoint in TransferController.
@@ -52,7 +54,7 @@ class TransferControllerTest {
         Transfer transfer2 = new Transfer(2L, 1L, 2L, 2, 2, BigDecimal.valueOf(20));
         expectedTransfers.add(transfer1);
         expectedTransfers.add(transfer2);
-        when(mockTransferDao.getAllTransfers()).thenReturn(expectedTransfers);
+        when(mockTransferService.getAllTransfers()).thenReturn(expectedTransfers);
 
         mockMvc.perform(get("/transfers"))
                 .andExpect(status().isOk())
@@ -85,7 +87,7 @@ class TransferControllerTest {
         // Arrange
         int transferId = 1;
         Transfer transfer = new Transfer(1, 2, 1, 2, 2, BigDecimal.valueOf(100));
-        when(mockTransferDao.getTransferById(transferId)).thenReturn(transfer);
+        when(mockTransferService.getTransferById(transferId)).thenReturn(transfer);
 
         // Act
         ResponseEntity<Transfer> response = transferController.getTransferById(transferId);
@@ -103,7 +105,7 @@ class TransferControllerTest {
     public void getTransferById_returnsNotFound_whenTransferDoesNotExist() {
         // Arrange
         int transferId = 1;
-        when(mockTransferDao.getTransferById(transferId)).thenReturn(null);
+        when(mockTransferService.getTransferById(transferId)).thenReturn(null);
 
         // Act
         ResponseEntity<Transfer> response = transferController.getTransferById(transferId);
@@ -121,42 +123,74 @@ class TransferControllerTest {
      of OK (200).
      */
     @Test
-    public void createTransfer_returnsCreatedTransfer() {
-        // Arrange
+    public void testCreateTransfer() {
         Transfer transfer = new Transfer();
         transfer.setTransferTypeId(1);
         transfer.setTransferStatusId(2);
-        transfer.setAccountFrom(3);
-        transfer.setAccountTo(4);
-        transfer.setAmount(BigDecimal.valueOf(100));
+        transfer.setAccountFrom(1);
+        transfer.setAccountTo(2);
+        transfer.setAmount(new BigDecimal("50.00"));
 
-        Transfer createdTransfer = new Transfer(1, 1, 2, 3, 4, BigDecimal.valueOf(100));
-        when(mockTransferDao.createTransfer(
-                transfer.getTransferTypeId(),
-                transfer.getTransferStatusId(),
-                transfer.getAccountFrom(),
-                transfer.getAccountTo(),
-                transfer.getAmount()
-        )).thenReturn(createdTransfer);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Transfer> entity = new HttpEntity<>(transfer, headers);
 
-        // Act
-        ResponseEntity<Transfer> response = transferController.createTransfer(transfer);
+        ResponseEntity<Transfer> response = restTemplate.postForEntity("/transfers", entity, Transfer.class);
 
-        // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(createdTransfer, response.getBody());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+
+        Transfer createdTransfer = response.getBody();
+        assertNotNull(createdTransfer.getTransferId());
+        assertEquals(transfer.getTransferTypeId(), createdTransfer.getTransferTypeId());
+        assertEquals(transfer.getTransferStatusId(), createdTransfer.getTransferStatusId());
+        assertEquals(transfer.getAccountFrom(), createdTransfer.getAccountFrom());
+        assertEquals(transfer.getAccountTo(), createdTransfer.getAccountTo());
+        assertEquals(transfer.getAmount(), createdTransfer.getAmount());
+
+        Transfer retrievedTransfer = transferService.getTransferById(createdTransfer.getTransferId());
+        assertNotNull(retrievedTransfer);
+        assertEquals(createdTransfer.getTransferId(), retrievedTransfer.getTransferId());
+        assertEquals(createdTransfer.getTransferTypeId(), retrievedTransfer.getTransferTypeId());
+        assertEquals(createdTransfer.getTransferStatusId(), retrievedTransfer.getTransferStatusId());
+        assertEquals(createdTransfer.getAccountFrom(), retrievedTransfer.getAccountFrom());
+        assertEquals(createdTransfer.getAccountTo(), retrievedTransfer.getAccountTo());
+        assertEquals(createdTransfer.getAmount(), retrievedTransfer.getAmount());
     }
     /*
     This test case tests the behavior of the deleteTransfer method of the TransferController class.
     It verifies that the method successfully calls the deleteTransfer method of the
      TransferDao class with the correct transfer ID.
-
-Explanation of the test case steps:
-In the Arrange step, a transfer ID is set up.
-In the Act step, the deleteTransfer method is called with the transfer ID set up in the Arrange step.
-In the Assert step, the deleteTransfer method of the TransferDao class is verified to have been
- called exactly once with the transfer ID set up in the Arrange step.
+    Explanation of the test case steps:
+    In the Arrange step, a transfer ID is set up.
+    In the Act step, the deleteTransfer method is called with the transfer ID set up in the Arrange step.
+    In the Assert step, the deleteTransfer method of the TransferDao class is verified to have been
+     called exactly once with the transfer ID set up in the Arrange step.
      */
+    @Test
+    void updateTransfer() {
+        // Create a transfer to update
+        Transfer transfer = new Transfer();
+        transfer.setTransferId(1L);
+        transfer.setTransferStatusId(2);
+
+        // Call the updateTransfer method
+        ResponseEntity<Transfer> response = transferController.updateTransfer(transfer, 1L);
+
+        // Verify that the response status is OK
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        // Verify that the returned Transfer object matches the expected values
+        Transfer updatedTransfer = response.getBody();
+        assertNotNull(updatedTransfer);
+        assertEquals(1L, updatedTransfer.getTransferId());
+        assertEquals(2, updatedTransfer.getTransferStatusId());
+
+        // Verify that the transfer was actually updated in the database
+        Transfer retrievedTransfer = transferService.getTransferById(1L);
+        assertNotNull(retrievedTransfer);
+        assertEquals(2, retrievedTransfer.getTransferStatusId());
+    }
+
     @Test
     public void deleteTransfer_deletesExistingTransfer() {
         // Arrange
@@ -166,6 +200,6 @@ In the Assert step, the deleteTransfer method of the TransferDao class is verifi
         transferController.deleteTransfer(transferId);
 
         // Assert
-        verify(mockTransferDao, times(1)).deleteTransfer(transferId);
+        verify(mockTransferService, times(1)).deleteTransfer(transferId);
     }
 }
