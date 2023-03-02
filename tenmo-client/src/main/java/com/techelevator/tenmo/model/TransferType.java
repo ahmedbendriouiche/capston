@@ -1,12 +1,9 @@
 package com.techelevator.tenmo.model;
 
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class TransferType {
-    @NotNull
     private int transferTypeId;
-    @NotNull
     private String transferTypeDesc;
 
     public TransferType() {
@@ -31,6 +28,11 @@ public class TransferType {
 
     public void setTransferTypeDesc(String transferTypeDesc) {
         this.transferTypeDesc = transferTypeDesc;
+    }
+
+    @Override
+    public String toString() {
+        return "Transfer Type { id = " + transferTypeId + " | description = " + transferTypeDesc + " }";
     }
 
     @Override

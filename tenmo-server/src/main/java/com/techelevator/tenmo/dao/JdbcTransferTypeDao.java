@@ -48,7 +48,7 @@ public class JdbcTransferTypeDao implements TransferTypeDao {
     public TransferType getTypeByName(String name) {
         TransferType type = null;
 
-        String sql = "SELECT * FROM transfer_type WHERE transfer_type_desc = ?;";
+        String sql = "SELECT * FROM transfer_type WHERE transfer_type_desc ILIKE ?;";
 
         SqlRowSet result = jdbcTemplate.queryForRowSet(sql, name);
 
@@ -61,7 +61,7 @@ public class JdbcTransferTypeDao implements TransferTypeDao {
     private TransferType mapRowToType(SqlRowSet rowSet) {
         TransferType tt = new TransferType();
         tt.setTransferTypeId(rowSet.getInt("transfer_type_id"));
-        tt.setTransferTypeDesc(rowSet.getString("transfer_status_desc"));
+        tt.setTransferTypeDesc(rowSet.getString("transfer_type_desc"));
 
         return tt;
     }

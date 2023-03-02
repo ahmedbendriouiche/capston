@@ -41,9 +41,9 @@ public class TransferTypeControllerTests {
 
     @Test
     public void testGetTypeByName() {
-        String name = "Receive";
-        TransferType expectedType = new TransferType(1, "Receive");
-        when(transferTypeService.getTypeByName("Receive")).thenReturn(expectedType);
+        String name = "Request";
+        TransferType expectedType = new TransferType(1, "Request");
+        when(transferTypeService.getTypeByName("Request")).thenReturn(expectedType);
 
         ResponseEntity<TransferType> response = transferTypeController.getTypeByName(name);
 
