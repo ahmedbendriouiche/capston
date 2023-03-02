@@ -9,6 +9,7 @@ import java.util.Set;
 public class User {
 
    private int id;
+
    private String username;
    @JsonIgnore // prevent from being sent to client
    private String password;
@@ -17,6 +18,9 @@ public class User {
    private Set<Authority> authorities = new HashSet<>();
 
    public User() { }
+   public User(String username) {
+      this.username = username;
+   }
 
    public User(int id, String username, String password, String authorities) {
       this.id = id;
