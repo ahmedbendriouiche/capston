@@ -1,0 +1,47 @@
+2023-03-02T16:27:29.0899572 400 : [{"timestamp":"2023-03-02T22:27:29.043+00:00","status":400,"error":"Bad Request","message":"Required request body is missing: public org.springframework.http.ResponseEntity<java.lang.Object> com.techelevator.tenmo.controller.AccountController.getBalance(com.techelevator.tenmo.model.CustomerRequestDto)","path":"/accounts/balance"}]
+2023-03-02T16:27:41.6852661 400 : [{"timestamp":"2023-03-02T22:27:41.682+00:00","status":400,"error":"Bad Request","message":"Required request body is missing: public org.springframework.http.ResponseEntity<java.lang.Object> com.techelevator.tenmo.controller.AccountController.getBalance(com.techelevator.tenmo.model.CustomerRequestDto)","path":"/accounts/balance"}]
+2023-03-02T16:28:30.719919 400 : [{"timestamp":"2023-03-02T22:28:30.717+00:00","status":400,"error":"Bad Request","message":"Required request body is missing: public org.springframework.http.ResponseEntity<java.lang.Object> com.techelevator.tenmo.controller.AccountController.getBalance(com.techelevator.tenmo.model.CustomerRequestDto)","path":"/accounts/balance"}]
+2023-03-02T16:30:14.3575567 400 : [{"timestamp":"2023-03-02T22:30:14.329+00:00","status":400,"error":"Bad Request","message":"Required request body is missing: public org.springframework.http.ResponseEntity<java.lang.Object> com.techelevator.tenmo.controller.AccountController.getBalance(com.techelevator.tenmo.model.CustomerRequestDto)","path":"/accounts/balance"}]
+2023-03-02T16:31:26.3071562 400 : [{"timestamp":"2023-03-02T22:31:26.277+00:00","status":400,"error":"Bad Request","message":"Required request body is missing: public org.springframework.http.ResponseEntity<java.lang.Object> com.techelevator.tenmo.controller.AccountController.getBalance(com.techelevator.tenmo.model.CustomerRequestDto)","path":"/accounts/balance"}]
+2023-03-02T16:38:30.0703015 400 : [{"timestamp":"2023-03-02T22:38:30.044+00:00","status":400,"error":"Bad Request","message":"Required request body is missing: public org.springframework.http.ResponseEntity<java.lang.Object> com.techelevator.tenmo.controller.AccountController.getBalance(com.techelevator.tenmo.model.CustomerRequestDto)","path":"/accounts/balance"}]
+2023-03-02T16:44:07.4971249 400 : [{"timestamp":"2023-03-02T22:44:07.460+00:00","status":400,"error":"Bad Request","message":"Required request body is missing: public org.springframework.http.ResponseEntity<java.lang.Object> com.techelevator.tenmo.controller.AccountController.getBalance(com.techelevator.tenmo.model.CustomerRequestDto)","path":"/accounts/balance"}]
+2023-03-02T16:50:44.4541315 400 : [{"timestamp":"2023-03-02T22:50:44.430+00:00","status":400,"error":"Bad Request","message":"Required request body is missing: public org.springframework.http.ResponseEntity<java.lang.Object> com.techelevator.tenmo.controller.AccountController.getBalance(com.techelevator.tenmo.model.CustomerRequestDto)","path":"/accounts/balance"}]
+2023-03-02T17:01:58.9326749 400 : [{"timestamp":"2023-03-02T23:01:58.897+00:00","status":400,"error":"Bad Request","message":"Required request body is missing: public org.springframework.http.ResponseEntity<java.lang.Object> com.techelevator.tenmo.controller.AccountController.getBalance(com.techelevator.tenmo.model.CustomerRequestDto)","path":"/accounts/balance"}]
+2023-03-02T17:02:30.3360607 400 : [{"timestamp":"2023-03-02T23:02:30.334+00:00","status":400,"error":"Bad Request","message":"Required request body is missing: public org.springframework.http.ResponseEntity<java.lang.Object> com.techelevator.tenmo.controller.AccountController.getBalance(com.techelevator.tenmo.model.CustomerRequestDto)","path":"/accounts/balance"}]
+2023-03-02T17:07:51.0469415 400 : [{"timestamp":"2023-03-02T23:07:51.044+00:00","status":400,"error":"Bad Request","message":"Required request body is missing: public org.springframework.http.ResponseEntity<java.lang.Object> com.techelevator.tenmo.controller.AccountController.getBalance(com.techelevator.tenmo.model.CustomerRequestDto)","path":"/accounts/balance"}]
+2023-03-02T17:12:43.4697742 Request JSON: {"id":1001,"name":"user"}
+2023-03-02T17:12:43.4967019 400 : [{"timestamp":"2023-03-02T23:12:43.487+00:00","status":400,"error":"Bad Request","message":"Required request body is missing: public org.springframework.http.ResponseEntity<java.lang.Object> com.techelevator.tenmo.controller.AccountController.getBalance(com.techelevator.tenmo.model.CustomerRequestDto)","path":"/accounts/balance"}]
+2023-03-02T17:24:59.9764649 Request JSON: {"id":1001,"name":"user"}
+2023-03-02T17:25:00.2178193 400 : [{"timestamp":"2023-03-02T23:25:00.192+00:00","status":400,"error":"Bad Request","message":"Validation failed for object='customerRequestDto'. Error count: 1","errors":[{"codes":["NotEmpty.customerRequestDto.name","... (543 bytes)]
+2023-03-02T17:34:06.8039567 Request JSON: {"id":1001,"name":"user"}
+2023-03-02T17:34:06.8977064 400 : [{"timestamp":"2023-03-02T23:34:06.883+00:00","status":400,"error":"Bad Request","message":"Required request body is missing: public org.springframework.http.ResponseEntity<java.lang.Object> com.techelevator.tenmo.controller.AccountController.getBalance(com.techelevator.tenmo.model.CustomerRequestDto)","path":"/accounts/balance"}]
+2023-03-02T17:34:24.495724 Request JSON: {"id":1001,"name":"user"}
+2023-03-02T17:34:24.5166668 400 : [{"timestamp":"2023-03-02T23:34:24.513+00:00","status":400,"error":"Bad Request","message":"Required request body is missing: public org.springframework.http.ResponseEntity<java.lang.Object> com.techelevator.tenmo.controller.AccountController.getBalance(com.techelevator.tenmo.model.CustomerRequestDto)","path":"/accounts/balance"}]
+2023-03-02T17:56:54.5425704 Request JSON: {"id":1004,"name":"admin"}
+2023-03-02T17:56:54.6203616 400 : [{"timestamp":"2023-03-02T23:56:54.605+00:00","status":400,"error":"Bad Request","message":"Required request body is missing: public org.springframework.http.ResponseEntity<java.lang.Object> com.techelevator.tenmo.controller.AccountController.getBalance(com.techelevator.tenmo.model.CustomerRequestDto)","path":"/accounts/balance"}]
+2023-03-02T18:42:22.1442926 Request JSON: {"id":1001,"name":"user"}
+2023-03-02T18:42:22.2001436 400 : [{"timestamp":"2023-03-03T00:42:22.181+00:00","status":400,"error":"Bad Request","message":"Required request body is missing: public org.springframework.http.ResponseEntity<java.lang.Object> com.techelevator.tenmo.controller.AccountController.getBalance(com.techelevator.tenmo.model.CustomerRequestDto)","path":"/accounts/balance"}]
+2023-03-02T18:57:45.0535649 Request JSON: {"id":1001,"name":"user"}
+2023-03-02T18:57:45.1014386 400 : [{"timestamp":"2023-03-03T00:57:45.087+00:00","status":400,"error":"Bad Request","message":"Required request body is missing: public org.springframework.http.ResponseEntity<java.lang.Object> com.techelevator.tenmo.controller.AccountController.getBalance(com.techelevator.tenmo.model.CustomerRequestDto)","path":"/accounts/balance"}]
+2023-03-02T20:22:47.8674903 Request JSON: {"id":1001,"name":"user"}
+2023-03-02T20:36:56.4023205 500 : [An error occurred while accessing data]
+2023-03-02T20:37:06.7850738 500 : [An error occurred while accessing data]
+2023-03-02T20:37:39.2102453 Request JSON: {"id":1001,"name":"user"}
+2023-03-02T20:37:39.320921 400 : [{"timestamp":"2023-03-03T02:37:39.304+00:00","status":400,"error":"Bad Request","message":"Required request body is missing: public org.springframework.http.ResponseEntity<java.lang.Object> com.techelevator.tenmo.controller.AccountController.getBalance(com.techelevator.tenmo.model.CustomerRequestDto)","path":"/accounts/balance"}]
+2023-03-02T20:52:23.6129223 Request JSON: {"id":1001,"name":"user"}
+2023-03-02T20:53:04.3397851 Request JSON: {"id":1001,"name":"user"}
+2023-03-02T20:53:04.4235605 400 : [{"timestamp":"2023-03-03T02:53:04.409+00:00","status":400,"error":"Bad Request","message":"Required request body is missing: public org.springframework.http.ResponseEntity<java.lang.Object> com.techelevator.tenmo.controller.AccountController.getBalance(com.techelevator.tenmo.model.CustomerRequestDto)","path":"/accounts/balance"}]
+2023-03-02T20:57:03.3254776 Request JSON: {"id":1001,"name":"user"}
+2023-03-02T20:57:03.4122461 405 : [{"timestamp":"2023-03-03T02:57:03.395+00:00","status":405,"error":"Method Not Allowed","message":"Request method 'GET' not supported","path":"/accounts/balance"}]
+2023-03-02T21:13:05.9488062 Request JSON: null
+2023-03-02T21:13:06.0537124 404 : [Accounts not founds for customer 'balance' Please verify customer inputs]
+2023-03-02T21:24:15.4110984 Request JSON: null
+2023-03-02T21:24:22.6113831 Request JSON: null
+2023-03-02T21:24:26.0400766 Request JSON: null
+2023-03-02T21:24:28.3550302 Request JSON: null
+2023-03-02T21:24:30.6039414 Request JSON: null
+2023-03-02T21:24:32.2783343 Request JSON: null
+2023-03-02T21:40:57.5181967 I/O error on POST request for "http://localhost:8080/login": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
+2023-03-02T21:41:04.0967252 I/O error on POST request for "http://localhost:8080/login": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
+2023-03-02T21:41:18.9158111 I/O error on POST request for "http://localhost:8080/login": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
+2023-03-02T21:43:47.7245304 404 : [Accounts not founds for customer 'balance' Please verify customer inputs]

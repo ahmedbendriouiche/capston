@@ -4,14 +4,14 @@ import java.util.Objects;
 
 public class User {
 
-    private int id;
+    private Long id;
     private String username;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -27,7 +27,7 @@ public class User {
     public boolean equals(Object other) {
         if (other instanceof User) {
             User otherUser = (User) other;
-            return otherUser.getId() == id
+            return Objects.equals(otherUser.getId(), id)
                     && otherUser.getUsername().equals(username);
         } else {
             return false;

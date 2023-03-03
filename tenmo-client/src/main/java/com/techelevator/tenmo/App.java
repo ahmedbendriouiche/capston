@@ -1,9 +1,13 @@
 package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.CustomerDto;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
+import com.techelevator.tenmo.services.CustomerAccountService;
+
+import java.math.BigDecimal;
 
 public class App {
 
@@ -85,8 +89,16 @@ public class App {
     }
 
 	private void viewCurrentBalance() {
-		// TODO Auto-generated method stub
-		
+        // TODO targeted customer
+        CustomerDto customerReq = new CustomerDto();
+        customerReq.setId(currentUser.getUser().getId());
+        customerReq.setName(currentUser.getUser().getUsername());
+
+		// instance customer request service
+        CustomerAccountService customerAccountService =
+                new CustomerAccountService(API_BASE_URL,customerReq,currentUser.getToken());
+        System.out.println(customerAccountService.getUserGeneralBalance());
+
 	}
 
 	private void viewTransferHistory() {

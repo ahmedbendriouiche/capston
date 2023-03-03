@@ -1,25 +1,31 @@
 package com.techelevator.tenmo.model;
 
+
 public class CustomerDto {
     private long id;
     private String name;
 
-    public CustomerDto(String name) {
-        this.name = name;
+    public long getId() {
+        return id;
     }
-    public CustomerDto() {}
 
     public void setId(long id) {
         this.id = id;
     }
 
+    public CustomerDto(String name) {
+        this.name = name;
+    }
+    public CustomerDto(long id,String name) {
+        this.name = name;
+        this.id = id;
+    }
+    public CustomerDto() {}
+
     public void setName(String name) {
         this.name = name;
     }
 
-    public long getId() {
-        return id;
-    }
 
     public String getName() {
         return name;

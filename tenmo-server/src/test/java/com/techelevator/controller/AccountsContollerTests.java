@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techelevator.tenmo.controller.AuthenticationController;
 import com.techelevator.tenmo.TenmoApplication;
 import com.techelevator.tenmo.controller.AccountController;
-import com.techelevator.tenmo.model.CustomerDto;
+import com.techelevator.tenmo.model.CustomerRequestDto;
 import com.techelevator.tenmo.model.LoginDto;
 
 import org.json.JSONObject;
@@ -14,15 +14,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -55,21 +51,20 @@ public class AccountsContollerTests {
 
     }
     @Test
-    public  void AccountsGetBalance_Forbidden_test() throws Exception {
+    public  void AccountsGetBalance_Forbidden_Access_test() throws Exception {
         String token ="Bearer "+ new JSONObject(getAuthToken()).getString("token");
 
         // send GET request to /accounts/balance with bearer token in authorization header
-        String customer = new ObjectMapper().writeValueAsString(new CustomerDto("user"));
-        mockMvcAccount.perform(get("/accounts/balance")
+
+        String response = mockMvcAccount.perform(get("/accounts/overallbalance?customer=user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.AUTHORIZATION, token)
-                        .content(customer))
-                .andExpect(status().isForbidden());
+                        .header(HttpHeaders.AUTHORIZATION, token))
+                .andExpect(status().isForbidden()).andReturn().getResponse().getContentAsString();
     }
     private String createLoginBody() throws  JsonProcessingException {
         LoginDto loginDto = new LoginDto();
-        loginDto.setUsername("user1");
-        loginDto.setPassword("user1");
+        loginDto.setUsername("admin");
+        loginDto.setPassword("admin");
         ObjectMapper objectMapper = new ObjectMapper();
         return  objectMapper.writeValueAsString(loginDto);
     }
