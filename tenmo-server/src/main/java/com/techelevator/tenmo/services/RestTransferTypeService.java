@@ -4,7 +4,9 @@ import com.techelevator.tenmo.dao.TransferTypeDao;
 import com.techelevator.tenmo.model.TransferStatus;
 import com.techelevator.tenmo.model.TransferType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 @Service
@@ -19,11 +21,25 @@ public class RestTransferTypeService implements TransferTypeService{
 
     @Override
     public TransferType getTypeByName(String name) {
-        return transferTypeDao.getTypeByName(name);
+        TransferType transferType = transferTypeDao.getTypeByName(name);
+
+        if(transferType == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Type Not Found");
+        } else {
+            return transferTypeDao.getTypeByName(name);
+        }
+
     }
 
     @Override
     public TransferType getTypeById(int id) {
-        return transferTypeDao.getTypeById(id);
+        TransferType transferType = transferTypeDao.getTypeById(id);
+
+        if(transferType == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ID Not Found");
+        } else {
+            return transferTypeDao.getTypeById(id);
+        }
+
     }
 }
