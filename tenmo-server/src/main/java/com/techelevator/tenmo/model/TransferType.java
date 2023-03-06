@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class TransferType {
     @NotNull
-    private int transferTypeId;
+    private long transferTypeId;
     @NotNull
     private String transferTypeDesc;
 
@@ -17,7 +17,7 @@ public class TransferType {
         this.transferTypeDesc = transferTypeDesc;
     }
 
-    public int getTransferTypeId() {
+    public long getTransferTypeId() {
         return transferTypeId;
     }
 

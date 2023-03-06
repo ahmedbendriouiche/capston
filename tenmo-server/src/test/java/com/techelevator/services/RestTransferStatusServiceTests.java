@@ -6,6 +6,8 @@ import com.techelevator.tenmo.services.RestTransferStatusService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 import org.mockito.*;
@@ -30,30 +32,33 @@ public class RestTransferStatusServiceTests {
     }
 
     @Test
-    public void testListAll() {
+    public void testListAll() throws Exception{
         List<TransferStatus> mockList = Arrays.asList(PENDING, APPROVED, REJECTED);
 
         when(transferStatusDao.listAll()).thenReturn(mockList);
 
-        List<TransferStatus> actualList = restTransferStatusService.listAll();
+        Principal admin = Mockito.mock(Principal.class);
+        when(admin.getName()).thenReturn("admin");
+
+        List<TransferStatus> actualList = restTransferStatusService.listAll(admin);
 
         Assert.assertEquals(mockList, actualList);
     }
 
     @Test
-    public void testGetStatusByName() {
+    public void testGetStatusByName() throws Exception{
         when(transferStatusDao.getStatusByName("Pending")).thenReturn(PENDING);
 
-        TransferStatus status = restTransferStatusService.getStatusByName("Pending");
+        TransferStatus status = restTransferStatusService.getStatus(0, "Pending");
 
         Assert.assertEquals(PENDING, status);
     }
 
     @Test
-    public void testGetStatusById() {
+    public void testGetStatusById() throws Exception{
         when(transferStatusDao.getStatusById(1)).thenReturn(PENDING);
 
-        TransferStatus status = restTransferStatusService.getStatusById(1);
+        TransferStatus status = restTransferStatusService.getStatus(1, null);
 
         Assert.assertEquals(PENDING, status);
     }

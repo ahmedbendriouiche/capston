@@ -1,35 +1,20 @@
 package com.techelevator.tenmo.model;
 
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Transfer {
 
-    private long transferId;
-
-    @NotBlank(message = "Transfer type ID must not be null")
-    private long transferTypeId;
-
-    @NotBlank(message = "Transfer status ID must not be null")
-    private long transferStatusId;
-
-    @NotBlank(message = "Account from must not be null")
-    private long accountFrom;
-
-    @NotBlank(message = "Account to must not be null")
-    private long accountTo;
-
-    @NotBlank(message = "Amount must not be null")
-    @DecimalMin(value = "0.01", message = "Amount must be greater than 0")
+    private Long transferId;
+    private Long transferTypeId;
+    private Long transferStatusId;
+    private Long accountFrom;
+    private Long accountTo;
     private BigDecimal amount;
-
 
     public Transfer() {}
 
-    public Transfer(long transferId, long transferTypeId, long transferStatusId, long accountFrom, long accountTo, BigDecimal amount) {
+    public Transfer(Long transferId, Long transferTypeId, Long transferStatusId, Long accountFrom, Long accountTo, BigDecimal amount) {
         this.transferId = transferId;
         this.transferTypeId = transferTypeId;
         this.transferStatusId = transferStatusId;
@@ -38,43 +23,43 @@ public class Transfer {
         this.amount = amount;
     }
 
-    public long getTransferId() {
+    public Long getTransferId() {
         return transferId;
     }
 
-    public void setTransferId(long transferId) {
+    public void setTransferId(Long transferId) {
         this.transferId = transferId;
     }
 
-    public long getTransferTypeId() {
+    public Long getTransferTypeId() {
         return transferTypeId;
     }
 
-    public void setTransferTypeId(long transferTypeId) {
+    public void setTransferTypeId(Long transferTypeId) {
         this.transferTypeId = transferTypeId;
     }
 
-    public long getTransferStatusId() {
+    public Long getTransferStatusId() {
         return transferStatusId;
     }
 
-    public void setTransferStatusId(long transferStatusId) {
+    public void setTransferStatusId(Long transferStatusId) {
         this.transferStatusId = transferStatusId;
     }
 
-    public long getAccountFrom() {
+    public Long getAccountFrom() {
         return accountFrom;
     }
 
-    public void setAccountFrom(long accountFrom) {
+    public void setAccountFrom(Long accountFrom) {
         this.accountFrom = accountFrom;
     }
 
-    public long getAccountTo() {
+    public Long getAccountTo() {
         return accountTo;
     }
 
-    public void setAccountTo(long accountTo) {
+    public void setAccountTo(Long accountTo) {
         this.accountTo = accountTo;
     }
 
@@ -85,6 +70,7 @@ public class Transfer {
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
+
     @Override
     public String toString() {
         return "Transfer {" +
@@ -112,4 +98,5 @@ public class Transfer {
     public int hashCode() {
         return Objects.hash(transferId, transferTypeId, transferStatusId, accountFrom, accountTo, amount);
     }
+
 }

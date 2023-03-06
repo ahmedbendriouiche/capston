@@ -30,24 +30,24 @@ public class TransferStatusControllerTests {
     private TransferStatusController transferStatusController;
 
     @Test
-    public void testGetStatus_returns_bad_request_without_parameters() {
+    public void testGetStatus_returns_bad_request_without_parameters() throws Exception{
         ResponseEntity<?> response = transferStatusController.getStatus(0, null);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getStatusCode().equals(HttpStatus.BAD_REQUEST));
     }
 
     @Test
-    public void testGetStatus_returns_bad_request_if_given_both_parameters() {
+    public void testGetStatus_returns_bad_request_if_given_both_parameters() throws Exception{
         ResponseEntity<?> response = transferStatusController.getStatus(1, "test");
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getStatusCode().equals(HttpStatus.BAD_REQUEST));
     }
 
     @Test
-    public void testGetStatus_returns_correct_status_when_given_id() {
+    public void testGetStatus_returns_correct_status_when_given_id() throws Exception{
         int id = 1;
         TransferStatus expectedStatus = new TransferStatus(id, "Pending");
-        when(transferStatusService.getStatusById(id)).thenReturn(expectedStatus);
+        when(transferStatusService.getStatus(id, null)).thenReturn(expectedStatus);
 
         ResponseEntity<?> response = transferStatusController.getStatus(id, null);
 
@@ -56,10 +56,10 @@ public class TransferStatusControllerTests {
     }
 
     @Test
-    public void testGetStatus_returns_correct_status_when_given_name() {
+    public void testGetStatus_returns_correct_status_when_given_name() throws Exception{
         String name = "pending";
         TransferStatus expectedStatus = new TransferStatus(1, "Pending");
-        when(transferStatusService.getStatusByName(name)).thenReturn(expectedStatus);
+        when(transferStatusService.getStatus(0, name)).thenReturn(expectedStatus);
 
         ResponseEntity<?> response = transferStatusController.getStatus(0, name);
 
@@ -68,9 +68,8 @@ public class TransferStatusControllerTests {
     }
 
     @Test
-    public void testGetStatuses_returns_ok_with_admin() {
+    public void testGetStatuses_returns_ok_with_admin() throws Exception{
         Principal admin = Mockito.mock(Principal.class);
-        when(admin.getName()).thenReturn("admin");
 
         ResponseEntity<?> adminResponse = transferStatusController.getStatuses(admin);
 
@@ -78,26 +77,24 @@ public class TransferStatusControllerTests {
     }
 
     @Test
-    public void testGetStatuses_returns_forbidden_without_admin() {
+    public void testGetStatuses_returns_forbidden_without_admin() throws Exception{
         Principal user = Mockito.mock(Principal.class);
-        when(user.getName()).thenReturn("user");
 
         ResponseEntity<?> userResponse = transferStatusController.getStatuses(user);
 
-        assertThat(userResponse.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(userResponse.getStatusCode().equals(HttpStatus.FORBIDDEN));
     }
 
     @Test
-    public void testGetStatuses_returns_correct_list() {
+    public void testGetStatuses_returns_correct_list() throws Exception{
         TransferStatus pending = new TransferStatus(1, "Pending");
         TransferStatus approved = new TransferStatus(2, "Approved");
         TransferStatus rejected = new TransferStatus(3, "Rejected");
 
-        List<TransferStatus> expectedList = Arrays.asList(pending, approved, rejected);
-        when(transferStatusService.listAll()).thenReturn(expectedList);
-
         Principal admin = Mockito.mock(Principal.class);
-        when(admin.getName()).thenReturn("admin");
+
+        List<TransferStatus> expectedList = Arrays.asList(pending, approved, rejected);
+        when(transferStatusService.listAll(admin)).thenReturn(expectedList);
 
         ResponseEntity<?> response = transferStatusController.getStatuses(admin);
 

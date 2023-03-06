@@ -52,6 +52,28 @@ public class ConsoleService {
         return new UserCredentials(username, password);
     }
 
+    public long promptForId() {
+        long idSelection = 0;
+        try {
+            idSelection = promptForLong("Enter ID of user you are sending to (0 to cancel): ");
+        } catch (NumberFormatException e) {
+            System.out.println("Please enter a number.");
+        }
+
+        return idSelection;
+    }
+
+    public BigDecimal promptForAmount() {
+        BigDecimal amount = BigDecimal.valueOf(0);
+        try {
+            amount = promptForBigDecimal("Enter amount: ");
+        } catch (NumberFormatException e) {
+            System.out.println("Please enter a number.");
+        }
+
+        return amount;
+    }
+
     public String promptForString(String prompt) {
         System.out.print(prompt);
         return scanner.nextLine();
@@ -75,6 +97,17 @@ public class ConsoleService {
                 return new BigDecimal(scanner.nextLine());
             } catch (NumberFormatException e) {
                 System.out.println("Please enter a decimal number.");
+            }
+        }
+    }
+
+    public long promptForLong(String prompt) {
+        System.out.print(prompt);
+        while (true) {
+            try {
+                return Long.parseLong(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a number.");
             }
         }
     }
