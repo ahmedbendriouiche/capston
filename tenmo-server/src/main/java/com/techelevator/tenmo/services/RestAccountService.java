@@ -41,8 +41,8 @@ public class RestAccountService implements AccountService {
     @Override
     public ResponseEntity<Object> customerMoneyTransfer(long to, long from, BigDecimal amount) {
         User userTo = userDao.getUserById(to);
-        User userFrom = userDao.getUserById(to);
-        if(userTo==null & userFrom==null) {
+        User userFrom = userDao.getUserById(from);
+        if(userTo==null || userFrom==null) {
             return  ResponseEntity.status(HttpStatus.ACCEPTED).body("both or one of the users info " +
                     "not correct");
         }
