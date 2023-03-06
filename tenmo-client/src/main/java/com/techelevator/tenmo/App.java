@@ -112,15 +112,8 @@ public class App {
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
-        long id;
-        BigDecimal amount;
-        System.out.println();
-		id = consoleService.promptForId();
-        if(id == 0) {
-            consoleService.pause();
-        } else {
-            amount = consoleService.promptForAmount();
-        }
+        long id = consoleService.promptForId("Enter ID of user you are sending to (0 to cancel): ");
+        BigDecimal amount = consoleService.promptForAmount("Enter amount: ");
 	}
 
 	private void requestBucks() {
