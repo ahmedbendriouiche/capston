@@ -52,10 +52,11 @@ public class ConsoleService {
         return new UserCredentials(username, password);
     }
 
-    public long promptForId() {
+    public long promptForId(String prompt) {
         long idSelection = 0;
+        System.out.print(prompt);
         try {
-            idSelection = promptForLong("Enter ID of user you are sending to (0 to cancel): ");
+            idSelection = Long.parseLong(scanner.nextLine());
         } catch (NumberFormatException e) {
             System.out.println("Please enter a number.");
         }
@@ -63,10 +64,11 @@ public class ConsoleService {
         return idSelection;
     }
 
-    public BigDecimal promptForAmount() {
+    public BigDecimal promptForAmount(String prompt) {
         BigDecimal amount = BigDecimal.valueOf(0);
+        System.out.print(prompt);
         try {
-            amount = promptForBigDecimal("Enter amount: ");
+            amount = new BigDecimal(scanner.nextLine());
         } catch (NumberFormatException e) {
             System.out.println("Please enter a number.");
         }
