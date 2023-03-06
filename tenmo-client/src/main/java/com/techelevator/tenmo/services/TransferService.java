@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.TransferStatus;
 import com.techelevator.util.BasicLogger;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -80,10 +81,12 @@ public class TransferService {
      * Updates an existing transfer on the API server.
      *
      * @param transfer the Transfer object representing the transfer to update
+     * @param status the status of the transfer
      * @return true if the transfer was updated successfully, false otherwise
      */
-    public boolean updateTransfer(Transfer transfer) {
+    public boolean updateTransfer(Transfer transfer, TransferStatus status) {
         boolean success = false;
+        transfer.setTransferStatusId(status.getTransferStatusId());
         HttpEntity<Transfer> entity = makeEntity(transfer);
         try{
             restTemplate.put(API_BASE_URL + transfer.getTransferId(), entity);

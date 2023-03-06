@@ -1,5 +1,6 @@
-package com.techelevator.tenmo.controller;
+package com.techelevator.controller;
 
+import com.techelevator.tenmo.controller.TransferController;
 import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.services.RestTransferService;

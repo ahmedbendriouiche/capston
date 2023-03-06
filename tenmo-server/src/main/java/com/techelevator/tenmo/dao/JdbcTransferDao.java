@@ -1,10 +1,12 @@
 package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.model.Transfer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,9 @@ public class JdbcTransferDao implements TransferDao {
     public JdbcTransferDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+    public JdbcTransferDao(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
     /**
      * Get all transfers
      * @return a list of Transfer objects
@@ -24,7 +29,7 @@ public class JdbcTransferDao implements TransferDao {
     public List<Transfer> getAllTransfers() {
         List<Transfer> transfers = new ArrayList<>();
         String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
-                "FROM transfers";
+                "FROM transfer";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
         while (results.next()) {
             Transfer transfer = mapRowToTransfer(results);
@@ -43,7 +48,7 @@ public class JdbcTransferDao implements TransferDao {
         List<Transfer> transfers = new ArrayList<>();
         String sql = "SELECT t.transfer_id, t.transfer_type_id, t.transfer_status_id, " +
                 "t.account_from, t.account_to, t.amount, u.username AS to_username " +
-                "FROM transfers t " +
+                "FROM transfer t " +
                 "JOIN accounts a ON t.account_from = a.account_id OR t.account_to = a.account_id " +
                 "JOIN users u ON u.user_id = a.user_id " +
                 "WHERE u.user_id = ?";
@@ -63,7 +68,7 @@ public class JdbcTransferDao implements TransferDao {
         Transfer transfer = null;
         String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, " +
                 "account_from, account_to, amount " +
-                "FROM transfers WHERE transfer_id = ?";
+                "FROM transfer WHERE transfer_id = ?";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferId);
         if (results.next()) {
             transfer = mapRowToTransfer(results);
@@ -102,7 +107,7 @@ public class JdbcTransferDao implements TransferDao {
      */
     @Override
     public Transfer createTransfer(long typeId, long statusId, long accountFrom, long accountTo, BigDecimal amount) {
-        String sql = "INSERT INTO transfers (transfer_type_id, transfer_status_id, " +
+        String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, " +
                 "account_from, account_to, amount) " +
                 "VALUES (?, ?, ?, ?, ?) RETURNING transfer_id";
         return getTransferById(jdbcTemplate.queryForObject(sql, Integer.class, typeId, statusId, accountFrom, accountTo, amount));
@@ -114,7 +119,7 @@ public class JdbcTransferDao implements TransferDao {
      */
     @Override
     public void createTransfer(Transfer transfer) {
-        String sql = "INSERT INTO transfers (transfer_type_id, transfer_status_id, " +
+        String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, " +
                 "account_from, account_to, amount) " +
                 "VALUES (?, ?, ?, ?, ?) RETURNING transfer_id";
         long transferId = jdbcTemplate.queryForObject(sql, Integer.class,
@@ -138,7 +143,7 @@ public class JdbcTransferDao implements TransferDao {
      */
     @Override
     public void deleteTransfer(long transferId) {
-        String sql = "DELETE FROM transfers WHERE transfer_id = ?";
+        String sql = "DELETE FROM transfer WHERE transfer_id = ?";
         jdbcTemplate.update(sql, transferId);
     }
 

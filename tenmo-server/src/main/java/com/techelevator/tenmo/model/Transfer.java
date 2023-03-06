@@ -3,6 +3,7 @@ package com.techelevator.tenmo.model;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class Transfer {
 
@@ -83,5 +84,32 @@ public class Transfer {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+    @Override
+    public String toString() {
+        return "Transfer {" +
+                "Transfer ID: " + transferId +
+                ", Transfer Type ID: " + transferTypeId +
+                ", Transfer Status ID: " + transferStatusId +
+                ", Account From: " + accountFrom +
+                ", Account To: " + accountTo +
+                ", Amount: " + amount +
+                '}';
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Transfer)) return false;
+        Transfer transfer = (Transfer) o;
+        return Objects.equals(transferId, transfer.transferId) &&
+                Objects.equals(transferTypeId, transfer.transferTypeId) &&
+                Objects.equals(transferStatusId, transfer.transferStatusId) &&
+                Objects.equals(accountFrom, transfer.accountFrom) &&
+                Objects.equals(accountTo, transfer.accountTo) &&
+                Objects.equals(amount, transfer.amount);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(transferId, transferTypeId, transferStatusId, accountFrom, accountTo, amount);
     }
 }
