@@ -61,7 +61,7 @@ public class CustomerAccountService implements AccountService {
     @Override
     public CustomerBalanceResponse getBalanceByAccount(long accountId) {
         CustomerBalanceResponse balance = null;
-        String apiUrl = baseUrl+"balanceByAccount?customer"+customerDto.getName()+"&accountID="+accountId;
+        String apiUrl = baseUrl+"balanceByAccount?customer="+customerDto.getName()+"&accountID="+accountId;
         try {
             HttpEntity<CustomerDto> httpEntity = makeHeader();
             ResponseEntity<CustomerBalanceResponse> response =
@@ -72,6 +72,20 @@ public class CustomerAccountService implements AccountService {
             BasicLogger.log(e.getMessage());
         }
        return null;
+    }
+
+    @Override
+    public void accountBalanceUpdate(long to, long from, BigDecimal amount) {
+        String apiUrl = baseUrl+"balance/transfer?to="+to+"&"+"from="+from+"&"+"amount="+amount;
+        try {
+            HttpEntity<CustomerDto> httpEntity = makeHeader();
+            ResponseEntity<Void> response =
+                    restTemplate.exchange(apiUrl, HttpMethod.PUT,
+                            httpEntity,Void.class);
+            System.out.println(response.getBody());
+        } catch (RestClientResponseException e) {
+            BasicLogger.log(e.getMessage());
+        }
     }
     private HttpEntity<CustomerDto> makeHeader() {
         HttpHeaders headers = new HttpHeaders();

@@ -67,7 +67,7 @@ public class AccountServiceTests {
     public void failed_authorization_test(){
      mockServer.expect(requestTo(API_URL+"accounts/overallbalance?customer=user"))
              .andExpect(method(HttpMethod.GET))
-             .andExpect(header(HttpHeaders.AUTHORIZATION, "Bearer "+ TOKEN+"45"))
+             .andExpect(header(HttpHeaders.AUTHORIZATION, "Bearer "+ TOKEN))
              .andRespond(withStatus(HttpStatus.FORBIDDEN));
      try {
          accountService.getUserGeneralBalance();
