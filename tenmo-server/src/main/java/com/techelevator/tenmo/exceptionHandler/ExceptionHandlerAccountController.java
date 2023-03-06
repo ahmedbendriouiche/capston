@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.nio.file.AccessDeniedException;
 
 @RestControllerAdvice
-
 public class ExceptionHandlerAccountController {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException e){

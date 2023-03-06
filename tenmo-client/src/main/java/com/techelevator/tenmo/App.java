@@ -89,16 +89,15 @@ public class App {
     }
 
 	private void viewCurrentBalance() {
-        // TODO targeted customer
+        // create customer targeted account
         CustomerDto customerReq = new CustomerDto();
         customerReq.setId(currentUser.getUser().getId());
         customerReq.setName(currentUser.getUser().getUsername());
 
-		// instance customer request service
+		// instantiate customer request service
         CustomerAccountService customerAccountService =
                 new CustomerAccountService(API_BASE_URL,customerReq,currentUser.getToken());
-        System.out.println(customerAccountService.getUserGeneralBalance());
-
+        System.out.println(customerAccountService.getUserGeneralBalance().getBalance());
 	}
 
 	private void viewTransferHistory() {

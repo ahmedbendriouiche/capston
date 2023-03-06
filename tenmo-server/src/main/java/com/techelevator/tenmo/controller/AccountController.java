@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -22,12 +23,13 @@ import java.util.List;
 public class AccountController {
     @Autowired
     private RestAccountService accountService;
+
    // Get all user accounts
    @GetMapping("/{customer}")
    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Object> getAccounts(@PathVariable String customer){
         List<Account> accounts = accountService.ListAllUserAccounts(customer);
-        if (accounts == null || accounts.isEmpty()) {
+        if (accounts.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Accounts not founds for customer '"+ customer+
                             "' Please verify customer inputs");
@@ -36,12 +38,12 @@ public class AccountController {
         }
     }
     /* Get user general balance : sum up all user accounts balances (over all balance)*/
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','VIEWER')")
     @GetMapping("/overallbalance")
     public ResponseEntity<Object> getBalance(@RequestParam String customer){
         CustomerBalanceDto customerBalanceDto = accountService
                 .getUserGeneralBalance(customer);
-        if(customerBalanceDto==null){
+        if(accountService==null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("No Balance found for customer '"+ customer
                             +"' Please verify customer inputs");
@@ -54,7 +56,6 @@ public class AccountController {
     @GetMapping("/balanceByAccount")
     public ResponseEntity<Object> getBalanceByAccount(@RequestParam String customer,
                                                       @RequestParam long accountId){
-
         CustomerBalanceDto customerBalanceDto = accountService.
                 getBalanceByAccount(customer,accountId);
         if(customerBalanceDto==null){
@@ -64,5 +65,10 @@ public class AccountController {
         }
         return ResponseEntity.ok(customerBalanceDto);
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @PutMapping("/balance/transfer")
+    public ResponseEntity<Object> accountBalanceUpdate(@RequestParam long to, @RequestParam long from,
+                                                @RequestParam BigDecimal amount){
+        return accountService.customerMoneyTransfer(to,from,amount);
+    }
 }

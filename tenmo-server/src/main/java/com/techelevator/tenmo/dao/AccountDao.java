@@ -9,4 +9,6 @@ public interface AccountDao {
     BigDecimal getGeneralBalance(String userName);
     BigDecimal getBalanceByAccount(String userName, Long AccountId);
     List<Account> accountsByUserName(String userName);
+    List<Account> ListAllOtherAccounts(String userName);
+    Boolean accountsUpdate(long to, long from, BigDecimal amount);
 }

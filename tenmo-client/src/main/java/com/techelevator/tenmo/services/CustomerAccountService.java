@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 public class CustomerAccountService implements AccountService {
 
@@ -41,38 +42,36 @@ public class CustomerAccountService implements AccountService {
         }
         return accounts;
     }
-
     @Override
-    public BigDecimal getUserGeneralBalance() {
+    public CustomerBalanceResponse getUserGeneralBalance() {
         CustomerBalanceResponse CustomerBalance = null;
-        String url = baseUrl+"overallbalance?customer="+customerDto.getName();
+        String apiUrl = baseUrl+"overallbalance?customer="+customerDto.getName();
         try {
             HttpEntity<CustomerDto> httpEntity = makeHeader();
             ResponseEntity<CustomerBalanceResponse> response =
-                    restTemplate.exchange(url, HttpMethod.GET,
+                    restTemplate.exchange(apiUrl, HttpMethod.GET,
                             httpEntity, CustomerBalanceResponse.class);
-            CustomerBalance = response.getBody();
+            return  response.getBody();
         } catch (RestClientResponseException e) {
             BasicLogger.log(e.getMessage());
         }
-        return CustomerBalance.getBalance();
+        return  null;
     }
 
     @Override
-    public BigDecimal getBalanceByAccount(long accountId) {
+    public CustomerBalanceResponse getBalanceByAccount(long accountId) {
         CustomerBalanceResponse balance = null;
-        String url = baseUrl+"balanceByAccount?customer"+customerDto.getName()+"&accountID="+accountId;
+        String apiUrl = baseUrl+"balanceByAccount?customer"+customerDto.getName()+"&accountID="+accountId;
         try {
             HttpEntity<CustomerDto> httpEntity = makeHeader();
             ResponseEntity<CustomerBalanceResponse> response =
-                    restTemplate.exchange(url, HttpMethod.GET,
+                    restTemplate.exchange(apiUrl, HttpMethod.GET,
                             httpEntity,CustomerBalanceResponse.class);
-            balance = response.getBody();
+            return  response.getBody();
         } catch (RestClientResponseException e) {
             BasicLogger.log(e.getMessage());
         }
-        assert balance != null;
-        return balance.getBalance();
+       return null;
     }
     private HttpEntity<CustomerDto> makeHeader() {
         HttpHeaders headers = new HttpHeaders();

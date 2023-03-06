@@ -45,3 +45,5 @@
 2023-03-02T21:41:04.0967252 I/O error on POST request for "http://localhost:8080/login": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
 2023-03-02T21:41:18.9158111 I/O error on POST request for "http://localhost:8080/login": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
 2023-03-02T21:43:47.7245304 404 : [Accounts not founds for customer 'balance' Please verify customer inputs]
+2023-03-02T23:52:35.4164001 404 : [{"timestamp":"2023-03-03T05:52:35.383+00:00","status":404,"error":"Not Found","message":"No message available","path":"/accounts/accounts/overallbalance"}]
+2023-03-02T23:53:59.6651006 404 : [{"timestamp":"2023-03-03T05:53:59.638+00:00","status":404,"error":"Not Found","message":"No message available","path":"/accounts/accounts/overallbalance"}]
