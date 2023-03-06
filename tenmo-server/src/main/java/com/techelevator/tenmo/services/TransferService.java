@@ -1,6 +1,8 @@
 package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.TransferStatus;
+import com.techelevator.tenmo.model.TransferType;
 
 import javax.security.auth.login.AccountNotFoundException;
 import java.math.BigDecimal;
@@ -12,7 +14,7 @@ public interface TransferService {
     List<Transfer> getTransfersByUserId(long userId);
     Transfer getTransferById(long transferId);
     List<Transfer> getAllTransfersByUser(long userId);
-    void createTransfer(Transfer transfer);
+    Transfer createTransfer(TransferType type, TransferStatus status, long accountFrom, long accountTo, BigDecimal amount);
     void deleteTransfer(long transferId);
     void updateTransfer(Transfer transfer);
 

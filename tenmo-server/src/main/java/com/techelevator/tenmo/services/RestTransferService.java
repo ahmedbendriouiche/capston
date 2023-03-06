@@ -6,6 +6,7 @@ import com.techelevator.tenmo.dao.TransferStatusDao;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.TransferStatus;
+import com.techelevator.tenmo.model.TransferType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +17,16 @@ import java.util.List;
 @Service
 public class RestTransferService implements TransferService {
 
-    private TransferDao transferDao;
-    private AccountDao accountDao;
-
     @Autowired
-    public RestTransferService(TransferDao transferDao, AccountDao accountDao) {
-        this.transferDao = transferDao;
-        this.accountDao = accountDao;
-    }
+    private TransferDao transferDao;
+//    @Autowired
+//    private AccountDao accountDao;
+
+//    @Autowired
+//    public RestTransferService(TransferDao transferDao, AccountDao accountDao) {
+//        this.transferDao = transferDao;
+//        this.accountDao = accountDao;
+//    }
     @Override
     public List<Transfer> getAllTransfers() {
         return transferDao.getAllTransfers();
@@ -41,8 +44,13 @@ public class RestTransferService implements TransferService {
         return transferDao.getAllTransfersByUser(userId);
     }
     @Override
-    public void createTransfer(Transfer transfer) {
-        transferDao.createTransfer(transfer);
+    public Transfer createTransfer(TransferType type, TransferStatus status, long accountFrom, long accountTo,
+                            BigDecimal amount) {
+        long typeId = type.getTransferTypeId();
+        long statusId = status.getTransferStatusId();
+        Transfer transfer = transferDao.createTransfer(typeId, statusId, accountFrom, accountTo, amount);
+
+        return transfer;
     }
     @Override
     public void updateTransfer(Transfer transfer) {

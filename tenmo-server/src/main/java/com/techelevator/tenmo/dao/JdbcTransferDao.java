@@ -18,9 +18,7 @@ public class JdbcTransferDao implements TransferDao {
     public JdbcTransferDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-    public JdbcTransferDao(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-    }
+
     /**
      * Get all transfers
      * @return a list of Transfer objects
@@ -109,24 +107,10 @@ public class JdbcTransferDao implements TransferDao {
     public Transfer createTransfer(long typeId, long statusId, long accountFrom, long accountTo, BigDecimal amount) {
         String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, " +
                 "account_from, account_to, amount) " +
-                "VALUES (?, ?, ?, ?, ?) RETURNING transfer_id";
+                "VALUES (?, ?, ?, ?, ?) RETURNING transfer_id;";
         return getTransferById(jdbcTemplate.queryForObject(sql, Integer.class, typeId, statusId, accountFrom, accountTo, amount));
     }
-    /**
-     Creates a new transfer with the given details and inserts it into the transfers table.
-     Sets the transfer ID of the input Transfer object to the generated ID after insertion.
-     @param transfer the Transfer object to insert
-     */
-    @Override
-    public void createTransfer(Transfer transfer) {
-        String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, " +
-                "account_from, account_to, amount) " +
-                "VALUES (?, ?, ?, ?, ?) RETURNING transfer_id";
-        long transferId = jdbcTemplate.queryForObject(sql, Integer.class,
-                transfer.getTransferTypeId(), transfer.getTransferStatusId(),
-                transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
-        transfer.setTransferId(transferId);
-    }
+
     /**
      Updates the specified transfer in the database.
      @param transfer the transfer to be updated

@@ -8,6 +8,6 @@ import java.util.List;
 public interface TransferTypeDao {
 
     List<TransferType> listAll();
-    TransferType getTypeById(int id);
+    TransferType getTypeById(long id);
     TransferType getTypeByName(String name);
 }

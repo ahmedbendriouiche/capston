@@ -31,7 +31,7 @@ public class JdbcTransferTypeDao implements TransferTypeDao {
     }
 
     @Override
-    public TransferType getTypeById(int id) {
+    public TransferType getTypeById(long id) {
         TransferType type = null;
 
         String sql = "SELECT * FROM transfer_type WHERE transfer_type_id = ?;";

@@ -32,7 +32,7 @@ public class RestTransferTypeService implements TransferTypeService{
     }
 
     @Override
-    public TransferType getTypeById(int id) {
+    public TransferType getTypeById(long id) {
         TransferType transferType = transferTypeDao.getTypeById(id);
 
         if(transferType == null) {

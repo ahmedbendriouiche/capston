@@ -8,5 +8,5 @@ import java.util.List;
 public interface TransferTypeService {
     List<TransferType> listAll();
     TransferType getTypeByName(String name);
-    TransferType getTypeById(int id);
+    TransferType getTypeById(long id);
 }
