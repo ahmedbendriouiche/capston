@@ -11,8 +11,7 @@ public interface AccountDao {
     List<Account> accountsByUserName(String userName);
     List<Account> ListAllOtherAccounts(String userName);
 
-    Boolean accountsUpdate(long from, long to, BigDecimal amount);
-
+    Boolean accountsUpdate(long to, long from, BigDecimal amount);
 
     long getAccountIdByUserId(long userId);
 

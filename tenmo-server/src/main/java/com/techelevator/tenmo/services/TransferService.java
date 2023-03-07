@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.TransferHistoryDto;
 import com.techelevator.tenmo.model.TransferStatus;
 import com.techelevator.tenmo.model.TransferType;
 
@@ -12,7 +13,7 @@ public interface TransferService {
 
     List<Transfer> getAllTransfers();
     Transfer getTransferById(long transferId);
-    List<Transfer> getAllTransfersByUser(long userId);
+    List<TransferHistoryDto> getAllTransfersByUser(long userId);
     Transfer createTransfer(TransferType type, TransferStatus status, long accountFrom, long accountTo, BigDecimal amount);
     void deleteTransfer(long transferId);
     void updateTransfer(Transfer transfer);

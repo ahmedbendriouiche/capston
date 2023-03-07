@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.TransferHistoryDto;
 import com.techelevator.tenmo.model.TransferStatus;
 import com.techelevator.tenmo.model.TransferType;
 import com.techelevator.tenmo.services.TransferService;
@@ -71,9 +72,9 @@ public class TransferController {
      * otherwise
      */
     @GetMapping("/users/{userId}")
-    public ResponseEntity<List<Transfer>> getAllTransfersByUser(@PathVariable long userId) {
-        List<Transfer> transfers = transferService.getAllTransfersByUser(userId);
-        return ResponseEntity.ok(transfers);
+    public ResponseEntity<List<TransferHistoryDto>> getAllTransfersByUser(@PathVariable long userId) {
+        List<TransferHistoryDto> history = transferService.getAllTransfersByUser(userId);
+        return ResponseEntity.ok(history);
     }
 
     /**

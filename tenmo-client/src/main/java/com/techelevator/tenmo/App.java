@@ -1,15 +1,11 @@
 package com.techelevator.tenmo;
 
 
-import com.techelevator.tenmo.model.AuthenticatedUser;
-import com.techelevator.tenmo.model.CustomerDto;
-import com.techelevator.tenmo.model.Transfer;
-import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.model.*;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
 import com.techelevator.tenmo.services.CustomerAccountService;
 import com.techelevator.tenmo.services.TransferService;
-import com.techelevator.util.BasicLogger;
 
 import java.math.BigDecimal;
 
@@ -112,13 +108,12 @@ public class App {
 
 	private void viewTransferHistory(AuthenticatedUser currentUser) {
 		// TODO Auto-generated method stub
-        Transfer[] transfers = transferService.getAllTransfersByUser(currentUser);
+        TransferHistoryDto[] history = transferService.getAllTransfersByUser(currentUser);
         System.out.println("-------------------------------------------");
         System.out.println("TRANSFER HISTORY");
         System.out.println("ID     From     To     Amount");
-        for (Transfer transfer : transfers) {
-            System.out.println(transfer.getTransferId() + " " + transfer.getAccountFrom() + " " + transfer.getAccountTo()
-            + " " + transfer.getAmount());
+        for (TransferHistoryDto transfer : history) {
+            System.out.println(transfer);
         }
         System.out.println("-------------------------------------------");
 	}
@@ -135,8 +130,7 @@ public class App {
         System.out.println("Users");
         System.out.println("ID          Name");
         System.out.println("-------------------------------------------");
-        //list all the customers
-        listAllUser();
+
         System.out.println("----------");
 
         //Prompt for id and transfer amount
@@ -152,13 +146,6 @@ public class App {
 		// TODO Auto-generated method stub
 		
 	}
-  private void listAllUser(){
-        try {
-            this.customerAccountService.listAllCustomer().
-                    forEach((s)-> System.out.println(s.getId()+"          "+s.getUsername() ));
 
-        }catch (Exception e){
-            BasicLogger.log(e.getMessage());
-        }
-  }
+
 }
