@@ -10,7 +10,6 @@ import com.techelevator.tenmo.services.CustomerAccountService;
 import com.techelevator.tenmo.services.TransferService;
 
 import java.math.BigDecimal;
-import java.security.Principal;
 
 public class App {
 
@@ -18,11 +17,8 @@ public class App {
 
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
-
     private final CustomerAccountService customerAccountService =  new CustomerAccountService() ;
-
     private final TransferService transferService = new TransferService(API_BASE_URL);
-
 
     private AuthenticatedUser currentUser;
 
@@ -113,7 +109,7 @@ public class App {
 
 	private void viewTransferHistory(AuthenticatedUser currentUser) {
 		// TODO Auto-generated method stub
-        Transfer[] transfers = transferService.getAllTransfers(currentUser);
+        Transfer[] transfers = transferService.getAllTransfersByUser(currentUser);
         System.out.println("-------------------------------------------");
         System.out.println("TRANSFER HISTORY");
         System.out.println("ID     From     To     Amount");

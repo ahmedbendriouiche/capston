@@ -7,6 +7,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -80,5 +81,16 @@ public class JdbcAccountDao implements AccountDao{
         return accounts.isEmpty() ? null: accounts.stream()
                 .map(Account::getBalance)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    @Override
+    public long getAccountIdByUserId(long userId) {
+        String sql = "SELECT account_id FROM account WHERE user_id = ?;";
+        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, userId);
+        if (result.next()) {
+            return result.getLong("account_id");
+        } else {
+            throw new RuntimeException("No account found for user with ID " + userId);
+        }
     }
 }

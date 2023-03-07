@@ -37,12 +37,14 @@ public class TransferService {
      *
      * @return an array of Transfer objects representing all transfers
      */
-    public Transfer[] getAllTransfers(AuthenticatedUser currentUser) {
+    public Transfer[] getAllTransfersByUser(AuthenticatedUser currentUser) {
         Transfer[] transfers = null;
+
         try{
-            ResponseEntity<Transfer[]> response = restTemplate.exchange(baseUrl, HttpMethod.GET,
-                    makeAuthEntity(currentUser),
-                    Transfer[].class);
+            long userId = currentUser.getUser().getId();
+
+            ResponseEntity<Transfer[]> response = restTemplate.exchange(baseUrl + "/users/" + userId, HttpMethod.GET,
+                    makeAuthEntity(currentUser), Transfer[].class);
             transfers = response.getBody();
         } catch (RestClientResponseException e){
             BasicLogger.log(e.getRawStatusCode() + " : " + e.getStatusText());

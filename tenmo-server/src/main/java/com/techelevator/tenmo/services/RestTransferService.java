@@ -19,6 +19,8 @@ public class RestTransferService implements TransferService {
 
     @Autowired
     private TransferDao transferDao;
+    @Autowired
+    private AccountDao accountDao;
 //    @Autowired
 //    private AccountDao accountDao;
 
@@ -38,7 +40,8 @@ public class RestTransferService implements TransferService {
     }
     @Override
     public List<Transfer> getAllTransfersByUser(long userId) {
-        return transferDao.getAllTransfersByUser(userId);
+        long accountId = accountDao.getAccountIdByUserId(userId);
+        return transferDao.getAllTransfersByUser(accountId);
     }
     @Override
     public Transfer createTransfer(TransferType type, TransferStatus status, long accountFrom, long accountTo,

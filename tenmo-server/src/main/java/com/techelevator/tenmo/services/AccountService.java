@@ -12,4 +12,6 @@ public interface AccountService {
     CustomerBalanceDto getUserGeneralBalance(String userName);
     CustomerBalanceDto getBalanceByAccount(String userName, long accountId);
     ResponseEntity<Object> customerMoneyTransfer(long to, long from, BigDecimal amount);
+
+    ResponseEntity<Long> getAccountIdByUserId(long userId);
 }

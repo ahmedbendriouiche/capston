@@ -75,11 +75,11 @@ public class JdbcTransferDao implements TransferDao {
     }
     /**
      * Get all transfers for a user, whether as the sender or receiver
-     * @param userId the ID of the user
+     * @param accountId the account_id of the user
      * @return a list of Transfer objects
      */
     @Override
-    public List<Transfer> getAllTransfersByUser(long userId) {
+    public List<Transfer> getAllTransfersByUser(long accountId) {
         List<Transfer> transfers = new ArrayList<>();
         String sql = "SELECT t.transfer_id, t.transfer_type_id, tt.transfer_type_desc, t.transfer_status_id, " +
                 "ts.transfer_status_desc, t.account_from, t.account_to, t.amount " +
@@ -87,7 +87,7 @@ public class JdbcTransferDao implements TransferDao {
                 "JOIN transfer_type tt ON t.transfer_type_id = tt.transfer_type_id " +
                 "JOIN transfer_status ts ON t.transfer_status_id = ts.transfer_status_id " +
                 "WHERE t.account_from = ? OR t.account_to = ?";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId, userId);
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountId, accountId);
         while (results.next()) {
             Transfer transfer = mapRowToTransfer(results);
             transfers.add(transfer);
