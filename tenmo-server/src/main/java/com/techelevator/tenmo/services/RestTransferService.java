@@ -19,6 +19,8 @@ public class RestTransferService implements TransferService {
 
     @Autowired
     private TransferDao transferDao;
+    @Autowired
+    private AccountDao accountDao;
 //    @Autowired
 //    private AccountDao accountDao;
 
@@ -31,21 +33,21 @@ public class RestTransferService implements TransferService {
     public List<Transfer> getAllTransfers() {
         return transferDao.getAllTransfers();
     }
-    @Override
-    public List<Transfer> getTransfersByUserId(long userId) {
-        return transferDao.getTransfersByUserId(userId);
-    }
+
     @Override
     public Transfer getTransferById(long transferId) {
         return transferDao.getTransferById(transferId);
     }
     @Override
     public List<Transfer> getAllTransfersByUser(long userId) {
-        return transferDao.getAllTransfersByUser(userId);
+        long accountId = accountDao.getAccountIdByUserId(userId);
+        return transferDao.getAllTransfersByUser(accountId);
     }
     @Override
-    public Transfer createTransfer(TransferType type, TransferStatus status, long accountFrom, long accountTo,
+    public Transfer createTransfer(TransferType type, TransferStatus status, long userFrom, long userTo,
                             BigDecimal amount) {
+        long accountFrom = accountDao.getAccountIdByUserId(userFrom);
+        long accountTo = accountDao.getAccountIdByUserId(userTo);
         long typeId = type.getTransferTypeId();
         long statusId = status.getTransferStatusId();
         Transfer transfer = transferDao.createTransfer(typeId, statusId, accountFrom, accountTo, amount);

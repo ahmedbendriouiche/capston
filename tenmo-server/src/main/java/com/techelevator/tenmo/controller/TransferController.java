@@ -71,23 +71,23 @@ public class TransferController {
      * otherwise
      */
     @GetMapping("/users/{userId}")
-    public ResponseEntity<List<Transfer>> getTransfersByUserId(@PathVariable int userId) {
-        List<Transfer> transfers = transferService.getTransfersByUserId(userId);
+    public ResponseEntity<List<Transfer>> getAllTransfersByUser(@PathVariable long userId) {
+        List<Transfer> transfers = transferService.getAllTransfersByUser(userId);
         return ResponseEntity.ok(transfers);
     }
 
     /**
      * Creates a new transfer based on the provided Transfer object.
      *
-     * @param transfer The Transfer object to create.
+     *
      * @return A ResponseEntity containing the created Transfer object.
      */
     @PostMapping("/new")
-    public ResponseEntity<Transfer> createTransfer(@RequestParam long accountFrom, @RequestParam long accountTo,
+    public ResponseEntity<Transfer> createTransfer(@RequestParam long userFrom, @RequestParam long userTo,
     @RequestParam BigDecimal amount) throws Exception{
         TransferStatus status = statusService.getStatus(0, "Approved");
         TransferType type = typeService.getTypeByName("Send");
-        Transfer transfer = transferService.createTransfer(type, status, accountFrom, accountTo, amount);
+        Transfer transfer = transferService.createTransfer(type, status, userFrom, userTo, amount);
 
         return new ResponseEntity<>(transfer, HttpStatus.CREATED);
     }

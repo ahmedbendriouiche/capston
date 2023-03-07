@@ -1,0 +1,6 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+/tenmo-client/target
+/tenmo-server/target
+/.idea

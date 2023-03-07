@@ -12,7 +12,6 @@ import com.techelevator.tenmo.services.TransferService;
 
 import java.math.BigDecimal;
 
-
 public class App {
 
     private static final String API_BASE_URL = "http://localhost:8080/";
@@ -112,7 +111,7 @@ public class App {
 
 	private void viewTransferHistory(AuthenticatedUser currentUser) {
 		// TODO Auto-generated method stub
-        Transfer[] transfers = transferService.getAllTransfers(currentUser);
+        Transfer[] transfers = transferService.getAllTransfersByUser(currentUser);
         System.out.println("-------------------------------------------");
         System.out.println("TRANSFER HISTORY");
         System.out.println("ID     From     To     Amount");
@@ -129,12 +128,22 @@ public class App {
 	}
 
 	private void sendBucks() {
-		// TODO Auto-generated method stub
-        long id = consoleService.promptForId("Enter ID of user you are sending to (0 to cancel): ");
-        BigDecimal amount = consoleService.promptForAmount("Enter amount: ");
         customerAccountService.setBaseUrl(API_BASE_URL+"accounts/");
         customerAccountService.setToken(currentUser.getToken());
+        System.out.println("-------------------------------------------");
+        System.out.println("Users");
+        System.out.println("ID          Name");
+        System.out.println("-------------------------------------------");
+
+        System.out.println("----------");
+
+        //Prompt for id and transfer amount
+        long id = consoleService.promptForId("Enter ID of user you are sending to (0 to cancel): ");
+        BigDecimal amount = consoleService.promptForAmount("Enter amount: ");
+
+        //Updates current user and target user for transfer
         customerAccountService.accountBalanceUpdate(id,currentUser.getUser().getId(),amount);
+        transferService.createTransfer(currentUser, id, amount);
 	}
 
 	private void requestBucks() {

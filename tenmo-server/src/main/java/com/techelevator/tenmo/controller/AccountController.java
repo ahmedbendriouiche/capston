@@ -49,4 +49,5 @@ public class AccountController {
                                                 @RequestParam BigDecimal amount){
         return accountService.customerMoneyTransfer(from,to,amount);
     }
+
 }

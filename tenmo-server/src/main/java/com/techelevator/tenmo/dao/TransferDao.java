@@ -8,7 +8,6 @@ import java.util.List;
 public interface TransferDao {
 
     List<Transfer> getAllTransfers();
-    List<Transfer> getTransfersByUserId(long userId);
 
     Transfer getTransferById(long id);
 

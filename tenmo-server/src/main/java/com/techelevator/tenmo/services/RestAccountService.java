@@ -69,4 +69,10 @@ public class RestAccountService implements AccountService {
             return  ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("money was not transferred due too internal issue error");
         }
     }
+
+    @Override
+    public ResponseEntity<Long> getAccountIdByUserId(long userId) {
+        long accountId = accountDao.getAccountIdByUserId(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(accountId);
+    }
 }
