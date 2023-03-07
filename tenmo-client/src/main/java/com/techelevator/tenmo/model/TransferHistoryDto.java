@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.model;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 public class TransferHistoryDto {
     private long transferId;
@@ -51,6 +52,10 @@ public class TransferHistoryDto {
 
     @Override
     public String toString() {
-        return getTransferId() + " " + getUserFrom() + " " + getUserTo() + " " + getAmount();
+        DecimalFormat format = new DecimalFormat("#,##0.00");
+        String amountString = format.format(getAmount());
+        String fString = String.format("| %-5d | %-50s | %-50s | $ %15s |", getTransferId(), getUserFrom(),
+                getUserTo(), amountString);
+        return fString;
     }
 }

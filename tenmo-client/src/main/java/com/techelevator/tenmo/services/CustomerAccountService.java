@@ -104,17 +104,20 @@ public class CustomerAccountService implements AccountService {
     }
 
     @Override
-    public void accountBalanceUpdate(long to, long from, BigDecimal amount) {
+    public boolean accountBalanceUpdate(long to, long from, BigDecimal amount) {
         String apiUrl = baseUrl+"balance/transfer?to="+to+"&"+"from="+from+"&"+"amount="+amount;
+        boolean success = false;
         try {
             HttpEntity<CustomerDto> httpEntity = makeHeader();
             ResponseEntity<String> response =
                     restTemplate.exchange(apiUrl, HttpMethod.PUT,
                             httpEntity,String.class);
             System.out.println(response.getBody());
+            success = true;
         } catch (RestClientResponseException e) {
             BasicLogger.log(e.getMessage());
         }
+        return success;
     }
 
     @Override

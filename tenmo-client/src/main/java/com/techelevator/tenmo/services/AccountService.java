@@ -13,6 +13,6 @@ public interface AccountService {
 
     CustomerBalanceResponse getUserGeneralBalance();
     CustomerBalanceResponse getBalanceByAccount(long accountId);
-    void accountBalanceUpdate(long to, long from,BigDecimal amount);
+    boolean accountBalanceUpdate(long to, long from,BigDecimal amount);
     List<User> listAllCustomer();
 }

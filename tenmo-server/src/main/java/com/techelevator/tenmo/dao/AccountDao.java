@@ -15,4 +15,6 @@ public interface AccountDao {
 
     long getAccountIdByUserId(long userId);
 
+    BigDecimal getBalanceByAccountId(Long accountId);
+
 }

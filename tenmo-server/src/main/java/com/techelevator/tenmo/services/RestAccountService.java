@@ -55,27 +55,34 @@ public class RestAccountService implements AccountService {
     public ResponseEntity<Object> customerMoneyTransfer(long from, long to, BigDecimal amount) {
         User userFrom = userDao.getUserById(from);
         User userTo = userDao.getUserById(to);
-        // make sure the user are exist
+        long currentUserAccountId = accountDao.getAccountIdByUserId(from);
+        BigDecimal balance = accountDao.getBalanceByAccountId(currentUserAccountId);
+
         if(userTo==null || userFrom==null) {
+            // make sure the user are exist
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("both or one of the users info " +
                     "not correct");
+        } else if(balance.compareTo(amount) < 0) {
+            //Sends error if current user has insufficient funds to send
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient Funds");
+        } else if(to == from){
+            // transfer to self not allowed
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("this operation can't be completed");
+        } else if(amount.compareTo(BigDecimal.ZERO) < 0 || amount.equals(BigDecimal.ZERO)) {
+            //Amount sent needs to be greater than 0
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Amount needs to be greater than 0");
+        } else {
+            //Tests for transfer success
+            Boolean isMoneyTransferred = accountDao.accountsUpdate(from, to, amount);
+            if (isMoneyTransferred) {
+                return ResponseEntity.status(HttpStatus.ACCEPTED).body("money was transferred");
+            } else {
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("money was not transferred due too internal issue error");
+            }
         }
-        // transfer to self not allowed
-        if(to==from){
-            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("this operation can't be completed");
-        }
-        // over draft not allowed
-        BigDecimal balance = accountDao.getGeneralBalance(userFrom.getUsername()).subtract(amount);
-        if(balance.compareTo(BigDecimal.ZERO)<0){
-            return  ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("You can not overdraft your accounts");
-        }
-
-        Boolean isMoneyTransferred = accountDao.accountsUpdate(from, to, amount);
-        if(isMoneyTransferred){
-            return  ResponseEntity.status(HttpStatus.ACCEPTED).body("money was transferred");
-        }else {
-            return  ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("money was not transferred due too internal issue error");
-        }
+//        BigDecimal balance = accountDao.getGeneralBalance(userFrom.getUsername()).subtract(amount);
+//        if(balance.compareTo(BigDecimal.ZERO)<0){
+//            return  ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("You can not overdraft your accounts");
     }
 
     @Override

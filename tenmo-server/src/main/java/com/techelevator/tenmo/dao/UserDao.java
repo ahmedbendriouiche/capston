@@ -17,4 +17,6 @@ public interface UserDao {
     boolean create(String username, String password);
 
     String getUsernameByAccountId(long accountId);
+
+    List<User> getAllButCurrent(long userId);
 }
