@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/customers")
+@RequestMapping("/accounts")
 @PreAuthorize("isAuthenticated()")
 public class CustomerController {
     @Autowired
     CustomerService customerService;
-    @GetMapping("/listall")
+    @GetMapping("/customers/listall")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public  ResponseEntity<Object> getAllCustomers(){
         return customerService.ListAllCustomer();

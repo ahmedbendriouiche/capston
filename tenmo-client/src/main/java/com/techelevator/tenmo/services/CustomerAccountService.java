@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.CustomerBalanceResponse;
 import com.techelevator.tenmo.model.CustomerDto;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.util.BasicLogger;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -115,6 +116,23 @@ public class CustomerAccountService implements AccountService {
             BasicLogger.log(e.getMessage());
         }
     }
+
+    @Override
+    public List<User> listAllCustomer() {
+        String apiUrl = baseUrl+"customers/listall";
+        try {
+            HttpEntity<CustomerDto> httpEntity = makeHeader();
+            ResponseEntity<List<User>> response =
+                    restTemplate.exchange(apiUrl, HttpMethod.GET,
+                            httpEntity, new ParameterizedTypeReference<>() {
+                            });
+            return response.getBody();
+        } catch (RestClientResponseException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return null;
+    }
+
     private HttpEntity<CustomerDto> makeHeader() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

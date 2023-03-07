@@ -9,6 +9,7 @@ import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
 import com.techelevator.tenmo.services.CustomerAccountService;
 import com.techelevator.tenmo.services.TransferService;
+import com.techelevator.util.BasicLogger;
 
 import java.math.BigDecimal;
 
@@ -134,7 +135,8 @@ public class App {
         System.out.println("Users");
         System.out.println("ID          Name");
         System.out.println("-------------------------------------------");
-
+        //list all the customers
+        listAllUser();
         System.out.println("----------");
 
         //Prompt for id and transfer amount
@@ -150,5 +152,13 @@ public class App {
 		// TODO Auto-generated method stub
 		
 	}
+  private void listAllUser(){
+        try {
+            this.customerAccountService.listAllCustomer().
+                    forEach((s)-> System.out.println(s.getId()+"          "+s.getUsername() ));
 
+        }catch (Exception e){
+            BasicLogger.log(e.getMessage());
+        }
+  }
 }

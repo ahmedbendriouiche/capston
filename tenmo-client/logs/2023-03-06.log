@@ -11,3 +11,5 @@
 2023-03-06T19:03:48.9329445 404 : [Accounts not founds for customer 'accounts' Please verify customer inputs]
 2023-03-06T19:06:34.4727467 404 : [Accounts not founds for customer 'accounts' Please verify customer inputs]
 2023-03-06T23:08:46.7853415 400 : 
+2023-03-06T22:46:21.6124222 404 : [{"timestamp":"2023-03-07T04:46:21.582+00:00","status":404,"error":"Not Found","message":"No message available","path":"/accounts/customers/listall"}]
+2023-03-06T22:51:24.5219178 404 : [{"timestamp":"2023-03-07T04:51:24.484+00:00","status":404,"error":"Not Found","message":"No message available","path":"/accounts/customers/listall"}]

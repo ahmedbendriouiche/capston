@@ -62,8 +62,8 @@ public class JdbcAccountDao implements AccountDao{
 
     private boolean moneyTransfer(long from, long to, BigDecimal amount){
         String sql="BEGIN TRANSACTION;\n" +
-                " UPDATE account  SET balance = (balance + ?) WHERE user_id = ?;\n" +
-                " UPDATE account SET balance = (balance - ?) WHERE user_id = ?;\n" +
+                " UPDATE account  SET balance = (balance - ?) WHERE user_id = ?;\n" +
+                " UPDATE account SET balance = (balance + ?) WHERE user_id = ?;\n" +
                 "COMMIT;";
         try {
             jdbcTemplate.update(sql,amount,to,amount,from);

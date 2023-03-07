@@ -53,15 +53,23 @@ public class RestAccountService implements AccountService {
 
     @Override
     public ResponseEntity<Object> customerMoneyTransfer(long from, long to, BigDecimal amount) {
-        User userTo = userDao.getUserById(to);
         User userFrom = userDao.getUserById(from);
+        User userTo = userDao.getUserById(to);
+        // make sure the user are exist
         if(userTo==null || userFrom==null) {
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("both or one of the users info " +
                     "not correct");
         }
+        // transfer to self not allowed
         if(to==from){
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("this operation can't be completed");
         }
+        // over draft not allowed
+        BigDecimal balance = accountDao.getGeneralBalance(userFrom.getUsername()).subtract(amount);
+        if(balance.compareTo(BigDecimal.ZERO)<0){
+            return  ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("You can not overdraft your accounts");
+        }
+
         Boolean isMoneyTransferred = accountDao.accountsUpdate(from, to, amount);
         if(isMoneyTransferred){
             return  ResponseEntity.status(HttpStatus.ACCEPTED).body("money was transferred");
