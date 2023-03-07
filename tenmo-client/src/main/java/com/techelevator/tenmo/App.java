@@ -2,12 +2,15 @@ package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.CustomerDto;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
 import com.techelevator.tenmo.services.CustomerAccountService;
+import com.techelevator.tenmo.services.TransferService;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 
 public class App {
 
@@ -15,6 +18,7 @@ public class App {
 
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
+    private final TransferService transferService = new TransferService(API_BASE_URL);
 
     private AuthenticatedUser currentUser;
 
@@ -72,7 +76,7 @@ public class App {
             if (menuSelection == 1) {
                 viewCurrentBalance();
             } else if (menuSelection == 2) {
-                viewTransferHistory();
+                viewTransferHistory(currentUser);
             } else if (menuSelection == 3) {
                 viewPendingRequests();
             } else if (menuSelection == 4) {
@@ -100,9 +104,17 @@ public class App {
         System.out.println(customerAccountService.getUserGeneralBalance().getBalance());
 	}
 
-	private void viewTransferHistory() {
+	private void viewTransferHistory(AuthenticatedUser currentUser) {
 		// TODO Auto-generated method stub
-		
+        Transfer[] transfers = transferService.getAllTransfers(currentUser);
+        System.out.println("-------------------------------------------");
+        System.out.println("TRANSFER HISTORY");
+        System.out.println("ID     From     To     Amount");
+        for (Transfer transfer : transfers) {
+            System.out.println(transfer.getTransferId() + " " + transfer.getAccountFrom() + " " + transfer.getAccountTo()
+            + " " + transfer.getAmount());
+        }
+        System.out.println("-------------------------------------------");
 	}
 
 	private void viewPendingRequests() {
