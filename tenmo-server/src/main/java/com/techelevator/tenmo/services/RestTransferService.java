@@ -44,8 +44,10 @@ public class RestTransferService implements TransferService {
         return transferDao.getAllTransfersByUser(accountId);
     }
     @Override
-    public Transfer createTransfer(TransferType type, TransferStatus status, long accountFrom, long accountTo,
+    public Transfer createTransfer(TransferType type, TransferStatus status, long userFrom, long userTo,
                             BigDecimal amount) {
+        long accountFrom = accountDao.getAccountIdByUserId(userFrom);
+        long accountTo = accountDao.getAccountIdByUserId(userTo);
         long typeId = type.getTransferTypeId();
         long statusId = status.getTransferStatusId();
         Transfer transfer = transferDao.createTransfer(typeId, statusId, accountFrom, accountTo, amount);

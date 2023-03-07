@@ -10,6 +10,7 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.util.List;
 /**
  * The TransferService class provides methods for interacting with the Transfer resource on the Tenmo API server.
@@ -73,14 +74,17 @@ public class TransferService {
     /**
      * Creates a new transfer on the API server.
      *
-     * @param transfer the Transfer object representing the transfer to create
+     *
      * @return true if the transfer was created successfully, false otherwise
      */
-    public boolean createTransfer(Transfer transfer) {
+    public boolean createTransfer(AuthenticatedUser currentUser, long userTo, BigDecimal amount) {
+
         boolean success = false;
-        HttpEntity<Transfer> entity = makeEntity(transfer);
+        long userFrom = currentUser.getUser().getId();
+        String url = baseUrl + "/new?userFrom=" + userFrom + "&userTo=" + userTo +"&amount=" + amount;
+
         try{
-            restTemplate.postForObject(baseUrl, entity, void.class);
+            restTemplate.postForObject(url, makeAuthEntity(currentUser), Void.class);
             success = true;
         } catch (RestClientResponseException e){
             BasicLogger.log(e.getRawStatusCode() + " : " + e.getStatusText());

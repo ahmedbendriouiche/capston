@@ -141,6 +141,7 @@ public class App {
 
         //Updates current user and target user for transfer
         customerAccountService.accountBalanceUpdate(id,currentUser.getUser().getId(),amount);
+        transferService.createTransfer(currentUser, id, amount);
 	}
 
 	private void requestBucks() {
