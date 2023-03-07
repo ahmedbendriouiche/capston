@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.services;
 
+import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.TransferStatus;
 import com.techelevator.util.BasicLogger;
@@ -15,25 +16,34 @@ import java.util.List;
  * It communicates with the server over HTTP using a RestTemplate object.
  */
 public class TransferService {
-    private final String API_BASE_URL = "http://localhost:8080/transfers/";
-    private final RestTemplate restTemplate;
+
+    private final String baseUrl;
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    private String authToken = null;
     /**
      * Constructs a new TransferService with the specified RestTemplate.
      *
-     * @param restTemplate the RestTemplate to use for HTTP requests
+     * @param url the baseUrl for the API
      */
-    public TransferService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public TransferService(String url) {
+        this.baseUrl = url + "transfers";
     }
+
+
+
     /**
      * Gets all transfers from the API server.
      *
      * @return an array of Transfer objects representing all transfers
      */
-    public Transfer[] getAllTransfers() {
+    public Transfer[] getAllTransfers(AuthenticatedUser currentUser) {
         Transfer[] transfers = null;
         try{
-            transfers = restTemplate.getForObject(API_BASE_URL, Transfer[].class);
+            ResponseEntity<Transfer[]> response = restTemplate.exchange(baseUrl, HttpMethod.GET,
+                    makeAuthEntity(currentUser),
+                    Transfer[].class);
+            transfers = response.getBody();
         } catch (RestClientResponseException e){
             BasicLogger.log(e.getRawStatusCode() + " : " + e.getStatusText());
         } catch (ResourceAccessException e){
@@ -50,7 +60,7 @@ public class TransferService {
     public Transfer getTransferById(long transferId) {
         Transfer transfer = null;
         try{
-            transfer = restTemplate.getForObject(API_BASE_URL + transferId, Transfer.class);
+            transfer = restTemplate.getForObject(baseUrl + transferId, Transfer.class);
         } catch (RestClientResponseException e){
             BasicLogger.log(e.getRawStatusCode() + " : " + e.getStatusText());
         } catch (ResourceAccessException e){
@@ -68,7 +78,7 @@ public class TransferService {
         boolean success = false;
         HttpEntity<Transfer> entity = makeEntity(transfer);
         try{
-            restTemplate.postForObject(API_BASE_URL, entity, void.class);
+            restTemplate.postForObject(baseUrl, entity, void.class);
             success = true;
         } catch (RestClientResponseException e){
             BasicLogger.log(e.getRawStatusCode() + " : " + e.getStatusText());
@@ -89,7 +99,7 @@ public class TransferService {
         transfer.setTransferStatusId(status.getTransferStatusId());
         HttpEntity<Transfer> entity = makeEntity(transfer);
         try{
-            restTemplate.put(API_BASE_URL + transfer.getTransferId(), entity);
+            restTemplate.put(baseUrl + transfer.getTransferId(), entity);
             success = true;
         } catch (RestClientResponseException e){
             BasicLogger.log(e.getRawStatusCode() + " : " + e.getStatusText());
@@ -107,7 +117,7 @@ public class TransferService {
     public boolean deleteTransfer(long transferId) {
         boolean success = false;
         try{
-            restTemplate.delete(API_BASE_URL + transferId);
+            restTemplate.delete(baseUrl + transferId);
             success = true;
         } catch (RestClientResponseException e){
             BasicLogger.log(e.getRawStatusCode() + " : " + e.getStatusText());
@@ -127,4 +137,12 @@ public class TransferService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         return new HttpEntity<>(transfer, headers);
     }
+
+    private HttpEntity<Void> makeAuthEntity(AuthenticatedUser currentUser) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(currentUser.getToken());
+        return new HttpEntity<>(headers);
+    }
+
+
 }
