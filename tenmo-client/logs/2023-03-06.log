@@ -1,3 +1,12 @@
 2023-03-06T16:26:00.2150185 I/O error on POST request for "http://localhost:8080/login": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
 2023-03-06T17:42:51.5415896 403 : [{"timestamp":"2023-03-06T23:42:51.493+00:00","status":403,"error":"Forbidden","message":"Access denied.","path":"/accounts/overallbalance"}]
 2023-03-06T17:49:34.7717498 403 : [{"timestamp":"2023-03-06T23:49:34.724+00:00","status":403,"error":"Forbidden","message":"Access denied.","path":"/accounts/overallbalance"}]
+2023-03-06T17:41:28.0411202 400 : [both or one of the users info not correct]
+2023-03-06T17:44:05.3607051 400 : [both or one of the users info not correct]
+2023-03-06T18:39:51.0092142 404 : [Accounts not founds for customer 'accounts' Please verify customer inputs]
+2023-03-06T18:43:25.0214204 401 : [no body]
+2023-03-06T18:44:17.2230563 404 : [Accounts not founds for customer 'accounts' Please verify customer inputs]
+2023-03-06T18:48:40.8601728 404 : [Accounts not founds for customer 'accounts' Please verify customer inputs]
+2023-03-06T18:49:28.7612394 404 : [Accounts not founds for customer 'accounts' Please verify customer inputs]
+2023-03-06T19:03:48.9329445 404 : [Accounts not founds for customer 'accounts' Please verify customer inputs]
+2023-03-06T19:06:34.4727467 404 : [Accounts not founds for customer 'accounts' Please verify customer inputs]
