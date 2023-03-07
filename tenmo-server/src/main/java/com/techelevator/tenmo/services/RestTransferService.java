@@ -31,10 +31,7 @@ public class RestTransferService implements TransferService {
     public List<Transfer> getAllTransfers() {
         return transferDao.getAllTransfers();
     }
-    @Override
-    public List<Transfer> getTransfersByUserId(long userId) {
-        return transferDao.getTransfersByUserId(userId);
-    }
+
     @Override
     public Transfer getTransferById(long transferId) {
         return transferDao.getTransferById(transferId);

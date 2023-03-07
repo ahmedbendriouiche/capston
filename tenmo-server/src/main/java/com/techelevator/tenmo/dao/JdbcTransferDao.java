@@ -41,21 +41,21 @@ public class JdbcTransferDao implements TransferDao {
      * @param userId the ID of the user
      * @return a list of Transfer objects
      */
-    @Override
-    public List<Transfer> getTransfersByUserId(long userId) {
-        List<Transfer> transfers = new ArrayList<>();
-        String sql = "SELECT t.transfer_id, t.transfer_type_id, t.transfer_status_id, " +
-                "t.account_from, t.account_to, t.amount, u.username AS to_username " +
-                "FROM transfer t " +
-                "JOIN accounts a ON t.account_from = a.account_id OR t.account_to = a.account_id " +
-                "JOIN users u ON u.user_id = a.user_id " +
-                "WHERE u.user_id = ?";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
-        while (results.next()) {
-            transfers.add(mapRowToTransfer(results));
-        }
-        return transfers;
-    }
+//    @Override
+//    public List<Transfer> getTransfersByUserId(long userId) {
+//        List<Transfer> transfers = new ArrayList<>();
+//        String sql = "SELECT t.transfer_id, t.transfer_type_id, t.transfer_status_id, " +
+//                "t.account_from, t.account_to, t.amount, u.username AS to_username " +
+//                "FROM transfer t " +
+//                "JOIN accounts a ON t.account_from = a.account_id OR t.account_to = a.account_id " +
+//                "JOIN users u ON u.user_id = a.user_id " +
+//                "WHERE u.user_id = ?";
+//        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+//        while (results.next()) {
+//            transfers.add(mapRowToTransfer(results));
+//        }
+//        return transfers;
+//    }
     /**
      * Get a transfer by ID
      * @param transferId the ID of the transfer

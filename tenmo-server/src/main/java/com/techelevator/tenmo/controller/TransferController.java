@@ -71,8 +71,8 @@ public class TransferController {
      * otherwise
      */
     @GetMapping("/users/{userId}")
-    public ResponseEntity<List<Transfer>> getTransfersByUserId(@PathVariable int userId) {
-        List<Transfer> transfers = transferService.getTransfersByUserId(userId);
+    public ResponseEntity<List<Transfer>> getAllTransfersByUser(@PathVariable long userId) {
+        List<Transfer> transfers = transferService.getAllTransfersByUser(userId);
         return ResponseEntity.ok(transfers);
     }
 

@@ -11,7 +11,6 @@ import java.util.List;
 public interface TransferService {
 
     List<Transfer> getAllTransfers();
-    List<Transfer> getTransfersByUserId(long userId);
     Transfer getTransferById(long transferId);
     List<Transfer> getAllTransfersByUser(long userId);
     Transfer createTransfer(TransferType type, TransferStatus status, long accountFrom, long accountTo, BigDecimal amount);
