@@ -18,8 +18,12 @@ public class App {
 
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
+<<<<<<< HEAD
+    private final CustomerAccountService customerAccountService =  new CustomerAccountService() ;
+=======
     private final TransferService transferService = new TransferService(API_BASE_URL);
 
+>>>>>>> 7cba7097a861a56ab755e3ed2a90b774d0d9bf52
     private AuthenticatedUser currentUser;
 
     public static void main(String[] args) {
@@ -98,9 +102,12 @@ public class App {
         customerReq.setId(currentUser.getUser().getId());
         customerReq.setName(currentUser.getUser().getUsername());
 
+        // initiate the service request
+        customerAccountService.setBaseUrl(API_BASE_URL+"accounts/");
+        customerAccountService.setToken(currentUser.getToken());
+        customerAccountService.setCustomerDto(customerReq);
+
 		// instantiate customer request service
-        CustomerAccountService customerAccountService =
-                new CustomerAccountService(API_BASE_URL,customerReq,currentUser.getToken());
         System.out.println(customerAccountService.getUserGeneralBalance().getBalance());
 	}
 
@@ -126,6 +133,9 @@ public class App {
 		// TODO Auto-generated method stub
         long id = consoleService.promptForId("Enter ID of user you are sending to (0 to cancel): ");
         BigDecimal amount = consoleService.promptForAmount("Enter amount: ");
+        customerAccountService.setBaseUrl(API_BASE_URL+"accounts/");
+        customerAccountService.setToken(currentUser.getToken());
+        customerAccountService.accountBalanceUpdate(id,currentUser.getUser().getId(),amount);
 	}
 
 	private void requestBucks() {

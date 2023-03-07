@@ -60,7 +60,6 @@ public class JdbcAccountDao implements AccountDao{
 
     @Override
     public Boolean accountsUpdate(long to, long from, BigDecimal amount) {
-
         return moneyTransfer(to,from,amount);
     }
 

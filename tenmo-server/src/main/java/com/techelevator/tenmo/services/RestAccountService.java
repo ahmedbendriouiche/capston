@@ -43,8 +43,11 @@ public class RestAccountService implements AccountService {
         User userTo = userDao.getUserById(to);
         User userFrom = userDao.getUserById(from);
         if(userTo==null || userFrom==null) {
-            return  ResponseEntity.status(HttpStatus.ACCEPTED).body("both or one of the users info " +
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("both or one of the users info " +
                     "not correct");
+        }
+        if(to==from){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("this operation can't be completed");
         }
         Boolean isMoneyTransferred = accountDao.accountsUpdate(to,from,amount);
         if(isMoneyTransferred){

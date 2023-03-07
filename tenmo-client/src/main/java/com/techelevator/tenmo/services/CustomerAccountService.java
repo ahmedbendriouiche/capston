@@ -17,16 +17,45 @@ import java.util.Objects;
 
 public class CustomerAccountService implements AccountService {
 
-    private final String baseUrl;
-    private final String token;
-    private final CustomerDto customerDto;
+    private String baseUrl;
+    private String token;
+    private  CustomerDto customerDto;
     private final RestTemplate restTemplate = new RestTemplate();
+
 
     public CustomerAccountService(String url, CustomerDto customerDto, String token) {
         this.baseUrl = url+"accounts/";
         this.token = token;
         this.customerDto = customerDto;
     }
+
+    public CustomerAccountService() {
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public CustomerDto getCustomerDto() {
+        return customerDto;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public void setCustomerDto(CustomerDto customerDto) {
+        this.customerDto = customerDto;
+    }
+
     @Override
     public List<Account> ListAllUserAccounts() {
         List<Account> accounts = null;
@@ -44,7 +73,6 @@ public class CustomerAccountService implements AccountService {
     }
     @Override
     public CustomerBalanceResponse getUserGeneralBalance() {
-        CustomerBalanceResponse CustomerBalance = null;
         String apiUrl = baseUrl+"overallbalance?customer="+customerDto.getName();
         try {
             HttpEntity<CustomerDto> httpEntity = makeHeader();
@@ -79,9 +107,9 @@ public class CustomerAccountService implements AccountService {
         String apiUrl = baseUrl+"balance/transfer?to="+to+"&"+"from="+from+"&"+"amount="+amount;
         try {
             HttpEntity<CustomerDto> httpEntity = makeHeader();
-            ResponseEntity<Void> response =
+            ResponseEntity<String> response =
                     restTemplate.exchange(apiUrl, HttpMethod.PUT,
-                            httpEntity,Void.class);
+                            httpEntity,String.class);
             System.out.println(response.getBody());
         } catch (RestClientResponseException e) {
             BasicLogger.log(e.getMessage());

@@ -38,7 +38,7 @@ public class AccountController {
         }
     }
     /* Get user general balance : sum up all user accounts balances (over all balance)*/
-    @PreAuthorize("hasAnyRole('ADMIN','VIEWER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("/overallbalance")
     public ResponseEntity<Object> getBalance(@RequestParam String customer){
         CustomerBalanceDto customerBalanceDto = accountService
