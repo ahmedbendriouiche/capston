@@ -1,10 +1,6 @@
 package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.model.Account;
-import com.techelevator.tenmo.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -60,13 +56,13 @@ public class JdbcAccountDao implements AccountDao{
 
     @Override
     public Boolean accountsUpdate(long to, long from, BigDecimal amount) {
-        return moneyTransfer(to,from,amount);
+        return moneyTransfer(from,to,amount);
     }
 
-    private boolean moneyTransfer(long to, long from, BigDecimal amount){
+    private boolean moneyTransfer(long from, long to, BigDecimal amount){
         String sql="BEGIN TRANSACTION;\n" +
-                " UPDATE account  SET balance = (balance + ?) WHERE account_id = ?;\n" +
-                " UPDATE account SET balance = (balance - ?) WHERE account_id = ?;\n" +
+                " UPDATE account  SET balance = (balance + ?) WHERE user_id = ?;\n" +
+                " UPDATE account SET balance = (balance - ?) WHERE user_id = ?;\n" +
                 "COMMIT;";
         try {
             jdbcTemplate.update(sql,amount,to,amount,from);

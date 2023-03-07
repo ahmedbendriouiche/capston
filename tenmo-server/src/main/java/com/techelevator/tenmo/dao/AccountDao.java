@@ -10,5 +10,5 @@ public interface AccountDao {
     BigDecimal getBalanceByAccount(String userName, Long AccountId);
     List<Account> accountsByUserName(String userName);
     List<Account> ListAllOtherAccounts(String userName);
-    Boolean accountsUpdate(long to, long from, BigDecimal amount);
+    Boolean accountsUpdate(long from, long to, BigDecimal amount);
 }

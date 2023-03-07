@@ -1,9 +1,6 @@
 package com.techelevator.tenmo.controller;
 
 
-import com.techelevator.tenmo.model.Account;
-import com.techelevator.tenmo.model.CustomerBalanceDto;
-import com.techelevator.tenmo.model.CustomerRequestDto;
 import com.techelevator.tenmo.services.RestAccountService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +10,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+
 import java.math.BigDecimal;
-import java.util.List;
+
 
 @RestController
 @RequestMapping("/accounts")
@@ -28,27 +25,14 @@ public class AccountController {
    @GetMapping("/{customer}")
    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Object> getAccounts(@PathVariable String customer){
-        List<Account> accounts = accountService.ListAllUserAccounts(customer);
-        if (accounts.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Accounts not founds for customer '"+ customer+
-                            "' Please verify customer inputs");
-        } else {
-            return ResponseEntity.ok(accounts);
-        }
+        return accountService.ListAllUserAccounts(customer);
     }
     /* Get user general balance : sum up all user accounts balances (over all balance)*/
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("/overallbalance")
     public ResponseEntity<Object> getBalance(@RequestParam String customer){
-        CustomerBalanceDto customerBalanceDto = accountService
+        return accountService
                 .getUserGeneralBalance(customer);
-        if(accountService==null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No Balance found for customer '"+ customer
-                            +"' Please verify customer inputs");
-        }
-        return ResponseEntity.ok(customerBalanceDto);
     }
 
     // get user's balance for specific account
@@ -56,19 +40,13 @@ public class AccountController {
     @GetMapping("/balanceByAccount")
     public ResponseEntity<Object> getBalanceByAccount(@RequestParam String customer,
                                                       @RequestParam long accountId){
-        CustomerBalanceDto customerBalanceDto = accountService.
-                getBalanceByAccount(customer,accountId);
-        if(customerBalanceDto==null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Balance Not found for customer '"+ customer
-            +"' Please verify customer inputs");
-        }
-        return ResponseEntity.ok(customerBalanceDto);
+        return accountService
+                .getBalanceByAccount(customer,accountId);
     }
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @PutMapping("/balance/transfer")
-    public ResponseEntity<Object> accountBalanceUpdate(@RequestParam long to, @RequestParam long from,
+    public ResponseEntity<Object> accountBalanceUpdate(@RequestParam long from, @RequestParam long to,
                                                 @RequestParam BigDecimal amount){
-        return accountService.customerMoneyTransfer(to,from,amount);
+        return accountService.customerMoneyTransfer(from,to,amount);
     }
 }

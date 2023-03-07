@@ -22,24 +22,37 @@ public class RestAccountService implements AccountService {
     @Autowired
     private UserDao userDao;
     @Override
-    public List<Account> ListAllUserAccounts(String userName) {
-        return accountDao.accountsByUserName(userName);
+    public ResponseEntity<Object> ListAllUserAccounts(String userName) {
+        List<Account> accounts = accountDao.accountsByUserName(userName);
+        if(accounts==null ){
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error : Something wrong happened!");
+        }
+        return ResponseEntity.ok(accounts);
     }
 
     @Override
-    public CustomerBalanceDto getUserGeneralBalance(String userName) {
-       return new CustomerBalanceDto(userDao.findByUsername(userName),
-               accountDao.getGeneralBalance(userName));
+    public ResponseEntity<Object> getUserGeneralBalance(String userName) {
+        User user = userDao.findByUsername(userName);
+        BigDecimal balance = accountDao.getGeneralBalance(userName);
+        if(user==null || balance==null ){
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error : Something wrong happened!");
+        }
+        return ResponseEntity.ok(new CustomerBalanceDto(user,balance));
     }
 
     @Override
-    public CustomerBalanceDto getBalanceByAccount(String userName, long accountId) {
-        return  new CustomerBalanceDto(userDao.findByUsername(userName),
-                accountDao.getBalanceByAccount(userName,accountId));
+    public ResponseEntity<Object> getBalanceByAccount(String userName, long accountId) {
+
+        User user = userDao.findByUsername(userName);
+        BigDecimal balance = accountDao.getBalanceByAccount(userName,accountId);
+        if(user==null || balance==null ){
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error : Something wrong happened!");
+        }
+        return ResponseEntity.ok(new CustomerBalanceDto(user,balance));
     }
 
     @Override
-    public ResponseEntity<Object> customerMoneyTransfer(long to, long from, BigDecimal amount) {
+    public ResponseEntity<Object> customerMoneyTransfer(long from, long to, BigDecimal amount) {
         User userTo = userDao.getUserById(to);
         User userFrom = userDao.getUserById(from);
         if(userTo==null || userFrom==null) {
@@ -49,7 +62,7 @@ public class RestAccountService implements AccountService {
         if(to==from){
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("this operation can't be completed");
         }
-        Boolean isMoneyTransferred = accountDao.accountsUpdate(to,from,amount);
+        Boolean isMoneyTransferred = accountDao.accountsUpdate(from, to, amount);
         if(isMoneyTransferred){
             return  ResponseEntity.status(HttpStatus.ACCEPTED).body("money was transferred");
         }else {
