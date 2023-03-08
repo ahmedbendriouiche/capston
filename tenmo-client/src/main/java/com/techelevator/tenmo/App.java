@@ -138,7 +138,6 @@ public class App {
             consoleService.printTransfersOptions();
             optionSelection = consoleService.promptForLong("\nPlease enter your selection: ");
             if (tranferIds.contains(optionSelection)) {
-                System.out.println("Transfer shows up here.");
                 viewTransfer(optionSelection, transfers);
             } else if (optionSelection == 0) {
                 continue;
