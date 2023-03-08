@@ -32,9 +32,9 @@ public class TransferController {
     private TransferTypeService typeService;
 
 
-//    public TransferController(TransferService transferService) {
-//        this.transferService = transferService;
-//    }
+    public TransferController(TransferService transferService) {
+        this.transferService = transferService;
+    }
 
     /**
      * Retrieves a list of all transfers.
