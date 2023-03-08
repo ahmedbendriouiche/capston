@@ -2,13 +2,17 @@ package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.model.Account;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class JdbcAccountDao implements AccountDao{
@@ -31,6 +35,7 @@ public class JdbcAccountDao implements AccountDao{
         try {
             balance= jdbcTemplate.queryForObject(sql, new Object[]{userName, accountId}, BigDecimal.class);
         }catch (Exception e){
+            System.err.println(e.getMessage());
             return null;
         }
         return balance;
@@ -41,6 +46,7 @@ public class JdbcAccountDao implements AccountDao{
         try {
             return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Account.class), userName);
         } catch (Exception e) {
+            System.err.println(e.getMessage());
             return Collections.emptyList();
         }
     }
@@ -51,27 +57,48 @@ public class JdbcAccountDao implements AccountDao{
         try {
             return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Account.class), userName);
         } catch (Exception e) {
+            System.err.println(e.getMessage());
             return Collections.emptyList();
         }
     }
 
     @Override
     public Boolean accountsUpdate(long to, long from, BigDecimal amount) {
-        return moneyTransfer(from,to,amount);
+        return transferFunds(from,to,amount);
     }
 
-    private boolean moneyTransfer(long from, long to, BigDecimal amount){
+    private boolean transferFunds(long from, long to, BigDecimal amount)  {
         String sql="BEGIN TRANSACTION;\n" +
                 " UPDATE account  SET balance = (balance - ?) WHERE user_id = ?;\n" +
                 " UPDATE account SET balance = (balance + ?) WHERE user_id = ?;\n" +
                 "COMMIT;";
-        try {
-            jdbcTemplate.update(sql,amount,to,amount,from);
+        try  {
+            Objects.requireNonNull(jdbcTemplate.getDataSource()).getConnection().setAutoCommit(false);
+            jdbcTemplate.execute((ConnectionCallback<Integer>) con -> {
+                PreparedStatement pstmt = con.prepareStatement(sql);
+                pstmt.setBigDecimal(1, amount);
+                pstmt.setLong(2,from);
+                pstmt.setBigDecimal(3, amount);
+                pstmt.setLong(4, to);
+                return pstmt.executeUpdate();
+            });
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            try {
+                Objects.requireNonNull(jdbcTemplate.getDataSource()).getConnection().rollback();
+            }catch (SQLException ex){
+                System.err.println(ex.getMessage());
+            }
             return false;
+        }finally {
+            try {
+                Objects.requireNonNull(jdbcTemplate.getDataSource()).getConnection().setAutoCommit(true);
+            }catch (SQLException ex){
+                System.err.println(ex.getMessage());
+            }
         }
-    }
+}
 
     private BigDecimal sumBalance(List<Account> accounts){
         return accounts.isEmpty() ? null: accounts.stream()
