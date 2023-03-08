@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.services;
 
+import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.TransferStatus;
 import com.techelevator.util.BasicLogger;
 import org.apiguardian.api.API;
@@ -10,20 +11,26 @@ import org.springframework.web.client.RestTemplate;
 
 
 public class TransferStatusService {
-    public static final String API_BASE_URL = "http://localhost:8080/transfers/status";
+    public final String baseUrl;
     private RestTemplate restTemplate = new RestTemplate();
+    private AuthenticatedUser currentUser;
 
-    private String authToken = null;
 
-    public void setAuthToken(String authToken) {
-        this.authToken = authToken;
+
+    public TransferStatusService(String baseUrl) {
+        this.baseUrl = baseUrl + "transfers/status";
+    }
+
+
+    public void setCurrentUser(AuthenticatedUser currentUser) {
+        this.currentUser = currentUser;
     }
 
     public TransferStatus[] getAllStatuses() {
         TransferStatus[] statuses = null;
         try {
             ResponseEntity<TransferStatus[]> response =
-                    restTemplate.exchange(API_BASE_URL, HttpMethod.GET, makeHeader(), TransferStatus[].class);
+                    restTemplate.exchange(baseUrl, HttpMethod.GET, makeAuthEntity(currentUser), TransferStatus[].class);
             statuses = response.getBody();
         } catch (RestClientResponseException e) {
             BasicLogger.log(e.getMessage());
@@ -35,7 +42,7 @@ public class TransferStatusService {
         TransferStatus status = null;
         try {
             ResponseEntity<TransferStatus> response =
-                    restTemplate.exchange((API_BASE_URL + "?id=" + id), HttpMethod.GET, makeHeader(),
+                    restTemplate.exchange((baseUrl + "?id=" + id), HttpMethod.GET, makeAuthEntity(currentUser),
                             TransferStatus.class);
             status = response.getBody();
         } catch (RestClientResponseException e) {
@@ -48,7 +55,7 @@ public class TransferStatusService {
         TransferStatus status = null;
         try {
             ResponseEntity<TransferStatus> response =
-                    restTemplate.exchange((API_BASE_URL + "?name=" + name), HttpMethod.GET, makeHeader(),
+                    restTemplate.exchange((baseUrl + "?name=" + name), HttpMethod.GET, makeAuthEntity(currentUser),
                             TransferStatus.class);
             status = response.getBody();
         } catch (RestClientResponseException e) {
@@ -57,8 +64,9 @@ public class TransferStatusService {
         return status;
     }
 
-    private HttpEntity<Void> makeHeader() {
+    private HttpEntity<Void> makeAuthEntity(AuthenticatedUser currentUser) {
         HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(currentUser.getToken());
         return new HttpEntity<>(headers);
     }
 }

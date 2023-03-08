@@ -50,12 +50,19 @@ public class TransferHistoryDto {
         this.amount = amount;
     }
 
-    @Override
-    public String toString() {
-        DecimalFormat format = new DecimalFormat("#,##0.00");
-        String amountString = format.format(getAmount());
-        String fString = String.format("| %-5d | %-50s | %-50s | $ %15s |", getTransferId(), getUserFrom(),
-                getUserTo(), amountString);
+    // Checks to see whether the current user sent or received the transfer, then prints who it was to or from
+    public String toString(AuthenticatedUser currentUser) {
+        DecimalFormat format = new DecimalFormat("#,##0.00"); /* format pattern for a numeric String */
+        String amountString = format.format(getAmount()); /* Formats our BigDecimal (as a String) with commas and a
+                                                             decimal that has a precision of 2 */
+        String fString = null;
+
+        if (currentUser.getUser().getUsername().equals(getUserFrom())) {
+            fString = String.format("| %-5d |   To: %-50s | $ %15s |", getTransferId(), getUserTo(), amountString);
+        } else {
+            fString = String.format("| %-5d | From: %-50s | $ %15s |", getTransferId(), getUserFrom(), amountString);
+        }
+
         return fString;
     }
 }

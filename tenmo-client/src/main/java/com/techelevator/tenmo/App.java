@@ -5,6 +5,8 @@ import com.techelevator.tenmo.model.*;
 import com.techelevator.tenmo.services.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class App {
 
@@ -15,6 +17,8 @@ public class App {
     private final CustomerAccountService customerAccountService =  new CustomerAccountService() ;
     private final UserInfoService userInfoService = new UserInfoService(API_BASE_URL);
     private final TransferService transferService = new TransferService(API_BASE_URL);
+    private final TransferStatusService statusService = new TransferStatusService(API_BASE_URL);
+    private final TransferTypeService typeService = new TransferTypeService(API_BASE_URL);
 
     private AuthenticatedUser currentUser;
 
@@ -59,6 +63,11 @@ public class App {
     private void handleLogin() {
         UserCredentials credentials = consoleService.promptForCredentials();
         currentUser = authenticationService.login(credentials);
+
+        // Setting AuthenticatedUser for services
+        statusService.setCurrentUser(currentUser);
+        typeService.setCurrentUser(currentUser);
+        transferService.setCurrentUser(currentUser);
         if (currentUser == null) {
             consoleService.printErrorMessage();
         }
@@ -72,13 +81,13 @@ public class App {
             if (menuSelection == 1) {
                 viewCurrentBalance();
             } else if (menuSelection == 2) {
-                viewTransferHistory(currentUser);
+                viewTransferHistory();
             } else if (menuSelection == 3) {
-                viewPendingRequests();
+//                viewPendingRequests();
             } else if (menuSelection == 4) {
                 sendBucks();
             } else if (menuSelection == 5) {
-                requestBucks();
+//                requestBucks();
             } else if (menuSelection == 0) {
                 continue;
             } else {
@@ -87,6 +96,7 @@ public class App {
             consoleService.pause();
         }
     }
+
 
 	private void viewCurrentBalance() {
         // create customer targeted account
@@ -103,22 +113,60 @@ public class App {
         System.out.println(customerAccountService.getUserGeneralBalance().getBalance());
 	}
 
-	private void viewTransferHistory(AuthenticatedUser currentUser) {
+	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
-        TransferHistoryDto[] history = transferService.getAllTransfersByUser(currentUser);
+        TransferHistoryDto[] history = transferService.getAllTransfersByUser();
         String hyphenSeparator = "--------------------------------------------------" +
-                "--------------------------------------------------" +
-                "-----------------------------------";
+                "--------------------------------------";
+
         System.out.println(hyphenSeparator);
-        System.out.printf("| %-131s |\n", "TRANSFER HISTORY");
+        System.out.printf("%-34s%s%34s\n", "|", "<<TRANSFER HISTORY>>", "|");
         System.out.println(hyphenSeparator);
-        System.out.printf("| %-5s | %-50s | %-50s | %-17s |\n","ID","FROM","TO","AMOUNT");
+        System.out.printf("| %-5s | %-56s | %-17s |\n","ID","FROM/TO","AMOUNT");
         System.out.println(hyphenSeparator);
         for (TransferHistoryDto transfer : history) {
-            System.out.println(transfer);
+            System.out.println(transfer.toString(currentUser));
         }
         System.out.println(hyphenSeparator);
+        transfersOptions(history);
 	}
+
+    private void transfersOptions(TransferHistoryDto[] transfers) {
+        List<Long> tranferIds = createListOfTransferIds(transfers);
+        long optionSelection = -1;
+        while (optionSelection != 0) {
+            consoleService.printTransfersOptions();
+            optionSelection = consoleService.promptForLong("\nPlease enter your selection: ");
+            if (tranferIds.contains(optionSelection)) {
+                System.out.println("Transfer shows up here.");
+                viewTransfer(optionSelection, transfers);
+            } else if (optionSelection == 0) {
+                continue;
+            } else {
+                System.out.println("Invalid Selection");
+            }
+            consoleService.pause();
+        }
+    }
+
+    private void viewTransfer(long transferId, TransferHistoryDto[] histories) {
+        Transfer transfer = transferService.getTransferById(transferId);
+        TransferType type = typeService.getTypeById(transfer.getTransferTypeId());
+        TransferStatus status = statusService.getStatusById(transfer.getTransferStatusId());
+        TransferDetailsDto details = new TransferDetailsDto();
+        for (TransferHistoryDto history : histories) {
+            if (history.getTransferId() == transferId) {
+                details.setTransferId(history.getTransferId());
+                details.setAccountFrom(history.getUserFrom());
+                details.setAccountTo(history.getUserTo());
+                details.setTransferType(type.getTransferTypeDesc());
+                details.setTransferStatus(status.getTransferStatusDesc());
+                details.setAmount(history.getAmount());
+                break;
+            }
+        }
+        System.out.println(details);
+    }
 
 	private void viewPendingRequests() {
 		// TODO Auto-generated method stub
@@ -148,7 +196,7 @@ public class App {
         //Updates current user and target user for transfer
         boolean success = customerAccountService.accountBalanceUpdate(id,currentUser.getUser().getId(),amount);
         if (success) {
-            transferService.createTransfer(currentUser, id, amount);
+            transferService.createTransfer(id, amount);
         } else {
             consoleService.printErrorMessage();
         }
@@ -159,5 +207,13 @@ public class App {
 		
 	}
 
+    private List<Long> createListOfTransferIds(TransferHistoryDto[] historyDtoList) {
+        List<Long> transferIds = new ArrayList<>();
+        for (TransferHistoryDto historyDto : historyDtoList) {
+            transferIds.add(historyDto.getTransferId());
+        }
+
+        return transferIds;
+    }
 
 }

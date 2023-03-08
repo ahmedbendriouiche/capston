@@ -21,6 +21,7 @@ public class TransferService {
 
     private final String baseUrl;
     private final RestTemplate restTemplate = new RestTemplate();
+    private AuthenticatedUser currentUser;
 
     private String authToken = null;
     /**
@@ -29,7 +30,11 @@ public class TransferService {
      * @param url the baseUrl for the API
      */
     public TransferService(String url) {
-        this.baseUrl = url;
+        this.baseUrl = url + "transfers";
+    }
+
+    public void setCurrentUser(AuthenticatedUser currentUser) {
+        this.currentUser = currentUser;
     }
 
     /**
@@ -37,7 +42,7 @@ public class TransferService {
      *
      * @return an array of Transfer objects representing all transfers
      */
-    public TransferHistoryDto[] getAllTransfersByUser(AuthenticatedUser currentUser) {
+    public TransferHistoryDto[] getAllTransfersByUser() {
         TransferHistoryDto[] history = null;
 
         try{
@@ -62,7 +67,9 @@ public class TransferService {
     public Transfer getTransferById(long transferId) {
         Transfer transfer = null;
         try{
-            transfer = restTemplate.getForObject(baseUrl + "/" + transferId, Transfer.class);
+            ResponseEntity<Transfer> response = restTemplate.exchange(baseUrl + "/" + transferId,
+             HttpMethod.GET, makeAuthEntity(currentUser), Transfer.class);
+            transfer = response.getBody();
         } catch (RestClientResponseException e){
             BasicLogger.log(e.getRawStatusCode() + " : " + e.getStatusText());
         } catch (ResourceAccessException e){
@@ -73,9 +80,10 @@ public class TransferService {
     /**
      * Creates a new transfer on the API server.
      *
+     *
      * @return true if the transfer was created successfully, false otherwise
      */
-    public boolean createTransfer(AuthenticatedUser currentUser, long userTo, BigDecimal amount) {
+    public boolean createTransfer(long userTo, BigDecimal amount) {
 
         boolean success = false;
         long userFrom = currentUser.getUser().getId();
