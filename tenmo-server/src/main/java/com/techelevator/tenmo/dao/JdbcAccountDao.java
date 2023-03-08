@@ -27,6 +27,7 @@ public class JdbcAccountDao implements AccountDao{
     public BigDecimal getGeneralBalance(String userName) {
         return sumBalance(accountsByUserName(userName));
     }
+
     @Override
     public BigDecimal getBalanceByAccount(String userName,Long accountId){
         String sql ="select a.balance  FROM account as a  join tenmo_user as u USING(user_id) where u.username = ? and " +
@@ -115,5 +116,18 @@ public class JdbcAccountDao implements AccountDao{
         } else {
             throw new RuntimeException("No account found for user with ID " + userId);
         }
+    }
+
+    @Override
+    public BigDecimal getBalanceByAccountId(Long accountId){
+        String sql ="select a.balance  FROM account as a  join tenmo_user as u USING(user_id) where " +
+                "a.account_id = ? ";
+        BigDecimal balance = null;
+        try {
+            balance= jdbcTemplate.queryForObject(sql, new Object[]{accountId}, BigDecimal.class);
+        }catch (Exception e){
+            return null;
+        }
+        return balance;
     }
 }

@@ -1,15 +1,8 @@
 package com.techelevator.tenmo;
 
 
-import com.techelevator.tenmo.model.AuthenticatedUser;
-import com.techelevator.tenmo.model.CustomerDto;
-import com.techelevator.tenmo.model.Transfer;
-import com.techelevator.tenmo.model.UserCredentials;
-import com.techelevator.tenmo.services.AuthenticationService;
-import com.techelevator.tenmo.services.ConsoleService;
-import com.techelevator.tenmo.services.CustomerAccountService;
-import com.techelevator.tenmo.services.TransferService;
-import com.techelevator.util.BasicLogger;
+import com.techelevator.tenmo.model.*;
+import com.techelevator.tenmo.services.*;
 
 import java.math.BigDecimal;
 
@@ -20,7 +13,7 @@ public class App {
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
     private final CustomerAccountService customerAccountService =  new CustomerAccountService() ;
-
+    private final UserInfoService userInfoService = new UserInfoService(API_BASE_URL);
     private final TransferService transferService = new TransferService(API_BASE_URL);
 
     private AuthenticatedUser currentUser;
@@ -112,15 +105,19 @@ public class App {
 
 	private void viewTransferHistory(AuthenticatedUser currentUser) {
 		// TODO Auto-generated method stub
-        Transfer[] transfers = transferService.getAllTransfersByUser(currentUser);
-        System.out.println("-------------------------------------------");
-        System.out.println("TRANSFER HISTORY");
-        System.out.println("ID     From     To     Amount");
-        for (Transfer transfer : transfers) {
-            System.out.println(transfer.getTransferId() + " " + transfer.getAccountFrom() + " " + transfer.getAccountTo()
-            + " " + transfer.getAmount());
+        TransferHistoryDto[] history = transferService.getAllTransfersByUser(currentUser);
+        String hyphenSeparator = "--------------------------------------------------" +
+                "--------------------------------------------------" +
+                "-----------------------------------";
+        System.out.println(hyphenSeparator);
+        System.out.printf("| %-131s |\n", "TRANSFER HISTORY");
+        System.out.println(hyphenSeparator);
+        System.out.printf("| %-5s | %-50s | %-50s | %-17s |\n","ID","FROM","TO","AMOUNT");
+        System.out.println(hyphenSeparator);
+        for (TransferHistoryDto transfer : history) {
+            System.out.println(transfer);
         }
-        System.out.println("-------------------------------------------");
+        System.out.println(hyphenSeparator);
 	}
 
 	private void viewPendingRequests() {
@@ -131,34 +128,36 @@ public class App {
 	private void sendBucks() {
         customerAccountService.setBaseUrl(API_BASE_URL+"accounts/");
         customerAccountService.setToken(currentUser.getToken());
+        UserInfoDto[] infoArray = userInfoService.getUserInfos(currentUser);
+
         System.out.println("-------------------------------------------");
-        System.out.println("Users");
-        System.out.println("ID          Name");
+        System.out.printf("| %-39s |\n", "USERS");
         System.out.println("-------------------------------------------");
-        //list all the customers
-        listAllUser();
-        System.out.println("----------");
+        System.out.printf("| %-11s | %-25s |\n","ID","NAME");
+        System.out.println("-------------------------------------------");
+        for (UserInfoDto info : infoArray) {
+            System.out.println(info);
+        }
+        System.out.println("-------------------------------------------\n");
+
 
         //Prompt for id and transfer amount
         long id = consoleService.promptForId("Enter ID of user you are sending to (0 to cancel): ");
         BigDecimal amount = consoleService.promptForAmount("Enter amount: ");
 
         //Updates current user and target user for transfer
-        customerAccountService.accountBalanceUpdate(id,currentUser.getUser().getId(),amount);
-        transferService.createTransfer(currentUser, id, amount);
+        boolean success = customerAccountService.accountBalanceUpdate(id,currentUser.getUser().getId(),amount);
+        if (success) {
+            transferService.createTransfer(currentUser, id, amount);
+        } else {
+            consoleService.printErrorMessage();
+        }
 	}
 
 	private void requestBucks() {
 		// TODO Auto-generated method stub
 		
 	}
-  private void listAllUser(){
-        try {
-            this.customerAccountService.listAllCustomer().
-                    forEach((s)-> System.out.println(s.getId()+"          "+s.getUsername() ));
 
-        }catch (Exception e){
-            BasicLogger.log(e.getMessage());
-        }
-  }
+
 }

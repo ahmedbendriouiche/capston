@@ -2,6 +2,7 @@ package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.TransferHistoryDto;
 import com.techelevator.tenmo.model.TransferStatus;
 import com.techelevator.util.BasicLogger;
 import org.springframework.core.ParameterizedTypeReference;
@@ -38,21 +39,21 @@ public class TransferService {
      *
      * @return an array of Transfer objects representing all transfers
      */
-    public Transfer[] getAllTransfersByUser(AuthenticatedUser currentUser) {
-        Transfer[] transfers = null;
+    public TransferHistoryDto[] getAllTransfersByUser(AuthenticatedUser currentUser) {
+        TransferHistoryDto[] history = null;
 
         try{
             long userId = currentUser.getUser().getId();
 
-            ResponseEntity<Transfer[]> response = restTemplate.exchange(baseUrl + "/users/" + userId, HttpMethod.GET,
-                    makeAuthEntity(currentUser), Transfer[].class);
-            transfers = response.getBody();
+            ResponseEntity<TransferHistoryDto[]> response = restTemplate.exchange(baseUrl + "/users/" + userId, HttpMethod.GET,
+                    makeAuthEntity(currentUser), TransferHistoryDto[].class);
+            history = response.getBody();
         } catch (RestClientResponseException e){
             BasicLogger.log(e.getRawStatusCode() + " : " + e.getStatusText());
         } catch (ResourceAccessException e){
             BasicLogger.log(e.getMessage());
         }
-        return transfers;
+        return history;
     }
     /**
      * Gets a transfer with the specified ID from the API server.
