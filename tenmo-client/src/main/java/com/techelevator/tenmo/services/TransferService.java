@@ -29,10 +29,8 @@ public class TransferService {
      * @param url the baseUrl for the API
      */
     public TransferService(String url) {
-        this.baseUrl = url + "transfers";
+        this.baseUrl = url;
     }
-
-
 
     /**
      * Gets all transfers from the API server.
@@ -64,7 +62,7 @@ public class TransferService {
     public Transfer getTransferById(long transferId) {
         Transfer transfer = null;
         try{
-            transfer = restTemplate.getForObject(baseUrl + transferId, Transfer.class);
+            transfer = restTemplate.getForObject(baseUrl + "/" + transferId, Transfer.class);
         } catch (RestClientResponseException e){
             BasicLogger.log(e.getRawStatusCode() + " : " + e.getStatusText());
         } catch (ResourceAccessException e){
@@ -74,7 +72,6 @@ public class TransferService {
     }
     /**
      * Creates a new transfer on the API server.
-     *
      *
      * @return true if the transfer was created successfully, false otherwise
      */
@@ -124,7 +121,7 @@ public class TransferService {
     public boolean deleteTransfer(long transferId) {
         boolean success = false;
         try{
-            restTemplate.delete(baseUrl + transferId);
+            restTemplate.delete(baseUrl + "/" + transferId);
             success = true;
         } catch (RestClientResponseException e){
             BasicLogger.log(e.getRawStatusCode() + " : " + e.getStatusText());
