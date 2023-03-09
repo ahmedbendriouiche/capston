@@ -1,28 +1,31 @@
 package com.techelevator.dao;
 
-import com.techelevator.tenmo.TenmoApplication;
+
 import com.techelevator.tenmo.dao.JdbcAccountDao;
 import com.techelevator.tenmo.dao.JdbcUserDao;
-import com.techelevator.tenmo.model.User;
+
+import org.junit.Assert;
 import org.junit.Before;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.Test;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.math.BigDecimal;
-@SpringBootTest(classes = TenmoApplication.class)
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+//@SpringBootTest(classes = TenmoApplication.class)
 public class JdbcAccountDaoTest extends BaseDaoTests{
-    @Autowired
-    JdbcAccountDao accountDao;
-    @Autowired
-    JdbcUserDao userDao;
-    protected static final User USER_1 = new User(1001, "user1", "user1", "USER");
-    protected static final User USER_2 = new User(1002, "user2", "user2", "USER");
-    private static final User USER_3 = new User(1003, "user3", "user3", "USER");
-    private final BigDecimal amountToSend = BigDecimal.valueOf(200.00);
-    private final BigDecimal updatedBalance = BigDecimal.valueOf(1200.00);
+    protected static  final String USER_1 = "new1";
+    protected static  final String PASSWORD_1 = "5465453";
+    protected static  final String USER_2 = "new2";
+    protected static  final String PASSWORD_2 = "5465453";
+    private static final BigDecimal AMOUNT_SENT = BigDecimal.valueOf(200.00);
+    private static final BigDecimal UPDATED_BALANCE = BigDecimal.valueOf(1200.00);
+    private static final BigDecimal INITIAL_BALANCE = BigDecimal.valueOf(1000.00);
+
+    private JdbcAccountDao accountDao;
+    private JdbcUserDao userDao;
 
     @Before
     public void setup() {
@@ -31,15 +34,27 @@ public class JdbcAccountDaoTest extends BaseDaoTests{
         userDao = new JdbcUserDao(jdbcTemplate);
     }
     @Test
-    public  void AccountGetBalance_Dao_test() throws Exception{
-        // compare what is database with doa outcome
-        userDao.create(USER_1.getUsername(),USER_1.getPassword());
-        Assertions.assertEquals(1000,accountDao.getGeneralBalance(USER_1.getUsername()));
+    public  void AccountGetBalance_Dao_test(){
+        // compare what is in database with doa outcome
+        userDao.create(USER_1,PASSWORD_1);
+        Assert.assertEquals(INITIAL_BALANCE.compareTo(accountDao.getGeneralBalance(USER_1)),0);
     }
     @Test
-    public  void updateAccountBalance() throws Exception{
-
-
+    public  void transfer_funds_test() {
+     // send fund
+     userDao.create(USER_1,PASSWORD_1);
+     userDao.create(USER_2,PASSWORD_2);
+     long from = userDao.findIdByUsername(USER_1);
+     long to = userDao.findIdByUsername(USER_2);
+     Assert.assertTrue(accountDao.accountsUpdate(from,to, AMOUNT_SENT));
+    }
+    @Test
+    public void overdraft_not_allowed_test(){
+        userDao.create(USER_1,PASSWORD_1);
+        userDao.create(USER_2,PASSWORD_2);
+        long from = userDao.findIdByUsername(USER_1);
+        long to = userDao.findIdByUsername(USER_2);
+        Assert.assertFalse(accountDao.accountsUpdate(from,to, AMOUNT_SENT.multiply(AMOUNT_SENT)));
     }
 
 }

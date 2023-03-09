@@ -18,6 +18,7 @@ public abstract class BaseDaoTests {
 
     @After
     public void rollback() throws SQLException {
+        dataSource.getConnection().setAutoCommit(false);
         dataSource.getConnection().rollback();
     }
 

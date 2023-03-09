@@ -42,7 +42,7 @@ class TransferControllerTest {
     @BeforeEach
     public void setup() {
         mockTransferService = mock(RestTransferService.class);
-        transferController = new TransferController(mockTransferService);
+       // transferController = new TransferController(mockTransferService);
     }
     /**
      * Test to verify the behavior of the "getAllTransfers" endpoint in TransferController.

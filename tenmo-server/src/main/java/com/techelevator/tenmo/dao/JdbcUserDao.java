@@ -24,12 +24,12 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public int findIdByUsername(String username) {
+    public long findIdByUsername(String username) {
         if (username == null) throw new IllegalArgumentException("Username cannot be null");
 
-        int userId;
+        long userId;
         try {
-            userId = jdbcTemplate.queryForObject("SELECT user_id FROM tenmo_user WHERE username = ?", int.class, username);
+            userId = jdbcTemplate.queryForObject("SELECT user_id FROM tenmo_user WHERE username = ?", Long.class, username);
         } catch (NullPointerException | EmptyResultDataAccessException e) {
             throw new UsernameNotFoundException("User " + username + " was not found.");
         }

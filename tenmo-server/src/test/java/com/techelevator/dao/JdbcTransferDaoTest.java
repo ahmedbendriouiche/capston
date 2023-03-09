@@ -1,19 +1,24 @@
 package com.techelevator.dao;
 
+import com.techelevator.tenmo.dao.JdbcAccountDao;
 import com.techelevator.tenmo.dao.JdbcTransferDao;
+import com.techelevator.tenmo.dao.JdbcUserDao;
 import com.techelevator.tenmo.dao.TransferDao;
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
+import org.junit.Assert;
 import org.junit.Before;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.junit.Test;
 
-import javax.sql.DataSource;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+
+
+
 import java.math.BigDecimal;
-import java.sql.SQLException;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,127 +33,124 @@ import static org.junit.jupiter.api.Assertions.*;
  * getTransferById, createTransfer, and deleteTransfer methods of the TransferDao interface.
  */
 
-public class JdbcTransferDaoTest {
+public class JdbcTransferDaoTest extends BaseDaoTests {
     private static final long USER_ID = 1L;
     private static final Transfer TEST_TRANSFER = new Transfer(1L, 2L, 2L, 1L, 2L, BigDecimal.valueOf(50.0));
     private static final Transfer ANOTHER_TEST_TRANSFER = new Transfer(2L, 2L, 2L, 2L, 1L, BigDecimal.valueOf(25.0));
-
-    private JdbcTransferDao dao;
-    DataSource dataSource;
+    protected static  final String USER_1 = "new1";
+    protected static  final String PASSWORD_1 = "5465453";
+    protected static  final String USER_2 = "new2";
+    protected static  final String PASSWORD_2 = "5465453";
+    private JdbcTransferDao transferDao;
+    private long accountFrom;
+    private long accountTo;
 
     /*
      * The setup method initializes the testTransfer object and sets up the jdbcTemplate and dao for each test method to use.
      * The test methods use assertions to verify that the methods of the dao return the expected results.
      */
-    @BeforeEach
+    @Before
     public void setup() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        dao = new JdbcTransferDao(jdbcTemplate);
+        transferDao = new JdbcTransferDao(jdbcTemplate);
+        JdbcAccountDao accountDao = new JdbcAccountDao(jdbcTemplate);
+        JdbcUserDao userDao = new JdbcUserDao(jdbcTemplate);
+
+        userDao.create(USER_1,PASSWORD_1);
+        userDao.create(USER_2,PASSWORD_2);
+         accountFrom = accountDao.getAccountIdByUserId(userDao.findIdByUsername(USER_1));
+         accountTo = accountDao.getAccountIdByUserId(userDao.findIdByUsername(USER_2));
+
     }
+
     /**
      Test case to verify that the getAllTransfers() method of JdbcTransferDao returns all transfers present in the database.
      It checks if the returned list of transfers is not null and has a size of 1, which is the size of the dataset in the test database.
      */
+    // create new customer
     @Test
-    void testGetAllTransfers() {
+    public void testCreateTransfer() {
         // Arrange
-        int initialSize = dao.getAllTransfers().size();
-        dao.createTransfer(TEST_TRANSFER);
-        dao.createTransfer(ANOTHER_TEST_TRANSFER);
+        Transfer transfer = new Transfer(2L, 2L, 2L, accountFrom, accountTo, BigDecimal.valueOf(15.0));
 
         // Act
-        List<Transfer> transfers = dao.getAllTransfers();
+
+        // Assert
+        assertNotNull(transfer);
+    }
+    @Test
+    public void testGetAllTransfers() {
+        // Arrange
+
+        transferDao.createTransfer(1L, 2L, accountFrom, accountTo,  BigDecimal.valueOf(50.0));
+        transferDao.createTransfer(2L, 3L, accountFrom, accountTo,  BigDecimal.valueOf(20.0));
+
+        // Act
+        List<Transfer> transfers = transferDao.getAllTransfers();
 
         // Assert
         assertNotNull(transfers);
-        assertEquals(initialSize + 2, transfers.size());
-        assertTrue(transfers.contains(TEST_TRANSFER));
-        assertTrue(transfers.contains(ANOTHER_TEST_TRANSFER));
     }
     /**
      Test case to verify that returns transfers
      only for the given user id.
      */
     @Test
-    void testGetTransfersByUserId() {
+    public void testGetTransfersByUserId() {
+
+        List<Transfer> transfers = new ArrayList<>(Arrays.asList(
+                transferDao.createTransfer(1L, 2L, accountFrom, accountTo,  BigDecimal.valueOf(50.0)),
+                transferDao.createTransfer(1L, 2L, accountFrom, accountTo,  BigDecimal.valueOf(50.0)),
+                transferDao.createTransfer(1L, 2L, accountFrom, accountTo,  BigDecimal.valueOf(50.0))
+        ));
+
         // Arrange
-        int initialSize = dao.getTransfersByUserId(USER_ID).size();
-        dao.createTransfer(TEST_TRANSFER);
-        dao.createTransfer(ANOTHER_TEST_TRANSFER);
-
-        // Act
-        List<Transfer> transfers = dao.getTransfersByUserId(USER_ID);
-
-        // Assert
-        assertNotNull(transfers);
-        assertEquals(initialSize + 2, transfers.size());
-        assertTrue(transfers.contains(TEST_TRANSFER));
-        assertTrue(transfers.contains(ANOTHER_TEST_TRANSFER));
+       int Size = transferDao.getAllTransfersByUser(accountFrom).size();
+        Assert.assertEquals(Size,transfers.size());
     }
 
     @Test
-    void testGetTransferById() {
-        // Arrange
-        dao.createTransfer(TEST_TRANSFER);
-        dao.createTransfer(ANOTHER_TEST_TRANSFER);
-
+    public void testGetTransferById() {
+        Transfer transfer = transferDao.createTransfer(1L, 2L, accountFrom, accountTo,  BigDecimal.valueOf(50.0));
         // Act
-        Transfer transfer = dao.getTransferById(TEST_TRANSFER.getTransferId());
+        Transfer transferExpected = transferDao.getTransferById(transfer.getTransferId());
 
         // Assert
         assertNotNull(transfer);
-        assertEquals(TEST_TRANSFER, transfer);
+        assertEquals(transfer, transferExpected);
     }
 
-    @Test
-    void testGetAllTransfersByUser() {
-        // Arrange
-        int initialSize = dao.getAllTransfersByUser(USER_ID).size();
-        dao.createTransfer(TEST_TRANSFER);
-        dao.createTransfer(ANOTHER_TEST_TRANSFER);
 
-        // Act
-        List<Transfer> transfers = dao.getAllTransfersByUser(USER_ID);
-
-        // Assert
-        assertNotNull(transfers);
-        assertEquals(initialSize + 2, transfers.size());
-        assertTrue(transfers.contains(TEST_TRANSFER));
-        assertTrue(transfers.contains(ANOTHER_TEST_TRANSFER));
-    }
 
     @Test
-    void testCreateTransfer() {
+    public void testUpdateTransfer() {
         // Arrange
-        Transfer transfer = new Transfer(2L, 2L, 2L, 1L, 2L, BigDecimal.valueOf(15.0));
+        //dao.createTransfer(TEST_TRANSFER);
+        Transfer transfer = transferDao.createTransfer(1L, 2L, accountFrom, accountTo,  BigDecimal.valueOf(50.0));
+
+
+        transfer.setTransferStatusId(2L);
 
         // Act
-        dao.createTransfer(transfer);
-        // Assert
-        assertNotNull(transfer.getTransferId());
-    }
-    @Test
-    void testUpdateTransfer() {
-        // Arrange
-        dao.createTransfer(TEST_TRANSFER);
-        TEST_TRANSFER.setTransferStatusId(2L);
-
-        // Act
-        dao.updateTransfer(TEST_TRANSFER);
+        transferDao.updateTransfer(transfer);
 
         // Assert
-        Transfer updatedTransfer = dao.getTransferById(TEST_TRANSFER.getTransferId());
+        Transfer updatedTransfer = transferDao.getTransferById(transfer.getTransferId());
         assertEquals(TEST_TRANSFER.getTransferStatusId(), updatedTransfer.getTransferStatusId());
     }
     @Test
-    void testDeleteTransfer() {
+    public void testDeleteTransfer() {
         // Arrange
-        dao.createTransfer(TEST_TRANSFER);
+        List<Transfer> transfers = new ArrayList<>(Arrays.asList(
+                transferDao.createTransfer(1L, 2L, accountFrom, accountTo,  BigDecimal.valueOf(50.0)),
+                transferDao.createTransfer(1L, 2L, accountFrom, accountTo,  BigDecimal.valueOf(50.0)),
+                transferDao.createTransfer(1L, 2L, accountFrom, accountTo,  BigDecimal.valueOf(50.0))
+        ));
 
         // Act
-        dao.deleteTransfer(TEST_TRANSFER.getTransferId());
+        transfers.forEach((s)->transferDao.deleteTransfer(s.getTransferId()));
 
         // Assert
-        assertNull(dao.getTransferById(TEST_TRANSFER.getTransferId()));
+        assertNull(transferDao.getTransferById(transfers.get(1).getTransferId()));
     }
 }

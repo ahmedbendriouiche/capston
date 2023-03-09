@@ -38,7 +38,7 @@ CREATE SEQUENCE seq_account_id
 CREATE TABLE account (
 	account_id int NOT NULL DEFAULT nextval('seq_account_id'),
 	user_id int NOT NULL,
-	balance decimal(13, 2) NOT NULL,
+	balance decimal(13, 2) NOT NULL CHECK (balance >= 0),
 	CONSTRAINT PK_account PRIMARY KEY (account_id),
 	CONSTRAINT FK_account_tenmo_user FOREIGN KEY (user_id) REFERENCES tenmo_user (user_id)
 );

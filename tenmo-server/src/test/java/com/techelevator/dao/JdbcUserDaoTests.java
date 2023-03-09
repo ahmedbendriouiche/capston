@@ -36,7 +36,7 @@ public class JdbcUserDaoTests extends BaseDaoTests {
 
     @Test
     public void findIdByUsername_given_valid_user_returns_user_id() {
-        int actualUserId = sut.findIdByUsername(USER_1.getUsername());
+        long actualUserId = sut.findIdByUsername(USER_1.getUsername());
 
         Assert.assertEquals(USER_1.getId(), actualUserId);
     }
