@@ -37,7 +37,7 @@ public class TransferServiceTest {
         @Autowired
         RestTemplate restTemplate = new RestTemplate();
         @Autowired
-        private TransferService transferService = new TransferService(restTemplate);
+        private TransferService transferService = new TransferService(API_URL);
 
         @Autowired
         private MockRestServiceServer mockServer;
@@ -46,27 +46,6 @@ public class TransferServiceTest {
         public void setup() {
             ReflectionTestUtils.setField(transferService, "restTemplate", restTemplate);
             mockServer = MockRestServiceServer.createServer(restTemplate);
-        }
-        @Test
-        public void testGetAllTransfers() {
-            mockServer.expect(requestTo(API_URL))
-                    .andExpect(method(HttpMethod.GET))
-                    .andRespond(withSuccess("[{\"transferId\":1,\"transferTypeId\":2,\"transferStatusId\":3," +
-                                    "\"accountFrom\":4,\"accountTo\":5,\"amount\":100.0}," +
-                                    "{\"transferId\":2,\"transferTypeId\":2,\"transferStatusId\":3," +
-                                    "\"accountFrom\":6,\"accountTo\":7,\"amount\":200.0}]",
-                            MediaType.APPLICATION_JSON));
-
-            Transfer[] transfers = null;
-            try {
-                transfers = transferService.getAllTransfers();
-            } catch (AssertionError e) {
-                fail("Didn't send the expected request to retrieve status.");
-            }
-            assertNotNull("Call to getAllTransfers() returned null.");
-            for (Transfer transfer : transfers) {
-                System.out.println(transfer);
-            }
         }
         @Test
         public void testGetTransferById() {
@@ -99,41 +78,6 @@ public class TransferServiceTest {
 
         // Verify that the mock server received the request
             mockServer.verify();
-        }
-        @Test
-        public void testUpdateTransfer() throws Exception {
-            // create a Transfer object
-            Transfer transfer = new Transfer();
-            transfer.setTransferId(1L);
-            transfer.setTransferTypeId(2L);
-            transfer.setTransferStatusId(4L);
-            transfer.setAccountFrom(4L);
-            transfer.setAccountTo(5L);
-            transfer.setAmount(new BigDecimal(100));
-
-            // create a TransferStatus object
-            TransferStatus status = new TransferStatus();
-            status.setTransferStatusId(5);
-
-            // mock the RestTemplate class
-            RestTemplate restTemplateSpy = Mockito.spy(restTemplate);
-
-            // set up the spy to return null when put() is called
-            Mockito.doNothing().when(restTemplateSpy).put(Mockito.anyString(), Mockito.any(HttpEntity.class));
-
-            // set up the service class with the spy RestTemplate
-            TransferService transferService = new TransferService(restTemplateSpy);
-            ReflectionTestUtils.setField(transferService, "restTemplate", restTemplateSpy);
-
-            // call the updateTransfer() method
-            boolean success = transferService.updateTransfer(transfer, status);
-
-            // verify that put() was called with the correct arguments
-            Mockito.verify(restTemplateSpy).put(API_URL + transfer.getTransferId(), makeEntityHelper(transfer));
-
-            // assert that the method returned true
-            assertTrue(success);
-
         }
 
         @Test

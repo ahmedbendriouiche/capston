@@ -19,7 +19,6 @@ public class JdbcTransferDao implements TransferDao {
     public JdbcTransferDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-
     /**
      * Get all transfers
      * @return a list of Transfer objects
@@ -36,27 +35,6 @@ public class JdbcTransferDao implements TransferDao {
         }
         return transfers;
     }
-
-    /**
-     * Get all transfers for a user
-     * @param userId the ID of the user
-     * @return a list of Transfer objects
-     */
-//    @Override
-//    public List<Transfer> getTransfersByUserId(long userId) {
-//        List<Transfer> transfers = new ArrayList<>();
-//        String sql = "SELECT t.transfer_id, t.transfer_type_id, t.transfer_status_id, " +
-//                "t.account_from, t.account_to, t.amount, u.username AS to_username " +
-//                "FROM transfer t " +
-//                "JOIN accounts a ON t.account_from = a.account_id OR t.account_to = a.account_id " +
-//                "JOIN users u ON u.user_id = a.user_id " +
-//                "WHERE u.user_id = ?";
-//        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
-//        while (results.next()) {
-//            transfers.add(mapRowToTransfer(results));
-//        }
-//        return transfers;
-//    }
     /**
      * Get a transfer by ID
      * @param transferId the ID of the transfer
@@ -118,7 +96,9 @@ public class JdbcTransferDao implements TransferDao {
      */
     @Override
     public void updateTransfer(Transfer transfer) {
+
        // String sql = "UPDATE transfer SET transfer_status_id = ?, updated_at = now() WHERE transfer_id = ?";
+
         String sql = "UPDATE transfer SET transfer_status_id = ? WHERE transfer_id = ?";
         jdbcTemplate.update(sql, transfer.getTransferStatusId(), transfer.getTransferId());
     }

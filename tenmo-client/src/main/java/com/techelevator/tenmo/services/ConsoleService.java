@@ -4,6 +4,7 @@ package com.techelevator.tenmo.services;
 import com.techelevator.tenmo.model.UserCredentials;
 
 import java.math.BigDecimal;
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class ConsoleService {
@@ -44,6 +45,12 @@ public class ConsoleService {
         System.out.println("5: Request TE bucks");
         System.out.println("0: Exit");
         System.out.println();
+    }
+
+    public void printTransfersOptions() {
+        System.out.println();
+        System.out.println("#: Enter an ID# to show transfer details");
+        System.out.println("0: Return to main menu");
     }
 
     public UserCredentials promptForCredentials() {

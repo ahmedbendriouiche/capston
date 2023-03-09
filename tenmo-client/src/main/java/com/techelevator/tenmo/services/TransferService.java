@@ -21,6 +21,7 @@ public class TransferService {
 
     private final String baseUrl;
     private final RestTemplate restTemplate = new RestTemplate();
+    private AuthenticatedUser currentUser;
 
     private String authToken = null;
     /**
@@ -32,14 +33,16 @@ public class TransferService {
         this.baseUrl = url + "transfers";
     }
 
-
+    public void setCurrentUser(AuthenticatedUser currentUser) {
+        this.currentUser = currentUser;
+    }
 
     /**
      * Gets all transfers from the API server.
      *
      * @return an array of Transfer objects representing all transfers
      */
-    public TransferHistoryDto[] getAllTransfersByUser(AuthenticatedUser currentUser) {
+    public TransferHistoryDto[] getAllTransfersByUser() {
         TransferHistoryDto[] history = null;
 
         try{
@@ -64,7 +67,9 @@ public class TransferService {
     public Transfer getTransferById(long transferId) {
         Transfer transfer = null;
         try{
-            transfer = restTemplate.getForObject(baseUrl + transferId, Transfer.class);
+            ResponseEntity<Transfer> response = restTemplate.exchange(baseUrl + "/" + transferId,
+             HttpMethod.GET, makeAuthEntity(currentUser), Transfer.class);
+            transfer = response.getBody();
         } catch (RestClientResponseException e){
             BasicLogger.log(e.getRawStatusCode() + " : " + e.getStatusText());
         } catch (ResourceAccessException e){
@@ -78,7 +83,7 @@ public class TransferService {
      *
      * @return true if the transfer was created successfully, false otherwise
      */
-    public boolean createTransfer(AuthenticatedUser currentUser, long userTo, BigDecimal amount) {
+    public boolean createTransfer(long userTo, BigDecimal amount) {
 
         boolean success = false;
         long userFrom = currentUser.getUser().getId();
@@ -124,7 +129,7 @@ public class TransferService {
     public boolean deleteTransfer(long transferId) {
         boolean success = false;
         try{
-            restTemplate.delete(baseUrl + transferId);
+            restTemplate.delete(baseUrl + "/" + transferId);
             success = true;
         } catch (RestClientResponseException e){
             BasicLogger.log(e.getRawStatusCode() + " : " + e.getStatusText());
